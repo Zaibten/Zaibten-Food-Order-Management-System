@@ -66,7 +66,7 @@ const SearchContent = ({ btn, data, serviceFilter }) => {
             >
               {services.map((service, i) => (
                 <Link
-                  to={`/shop/${id}/${service.id}/booking`}
+                  to={`/shop/${id}/`}
                   key={i}
                   style={{
                     textDecoration: "none",

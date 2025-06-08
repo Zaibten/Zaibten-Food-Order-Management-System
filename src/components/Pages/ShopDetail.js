@@ -161,8 +161,8 @@ const addToCart = (service) => {
           ) : (
             <div className="col-12 col-sm-8 ms-sm-3 d-flex text-white">
               <div>
-                <span>Salon Name: {shopDetails.shopName}</span><br />
-                <span>Owner: {shopDetails.name}</span><br />
+                <span>Restaurent Name: {shopDetails.shopName}</span><br />
+                {/* <span>Owner: {shopDetails.name}</span><br /> */}
                 <span>Timing: {shopDetails.shopOpen || "10:00 AM"} - {shopDetails.shopClose}</span><br />
                 <span>Contact: {shopDetails.number}</span>
               </div>
@@ -172,7 +172,7 @@ const addToCart = (service) => {
       </div>
       {shopDetails && (
   <div className="mt-4">
-    <h5 className="text-white">SALON LOCATION</h5>
+    <h5 className="text-white">LOCATION</h5>
     <div className="rounded overflow-hidden shadow" style={{ height: "300px", width: "100%" }}>
       <iframe
         title="Google Map"
