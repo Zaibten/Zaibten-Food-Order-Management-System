@@ -2,7 +2,7 @@
 
 A full-stack food order management platform built with modern technologies to streamline online food ordering, built for performance, scalability, and ease of use.
 
-🚀 **Live Demo**: [zaibten-food.vercel.app](https://zaibten-food.vercel.app)
+🚀 **Live Demo**: [zaibten-food.vercel.app](https://zaibtenfood.vercel.app)
 
 ---
 
