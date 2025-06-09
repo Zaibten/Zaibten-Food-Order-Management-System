@@ -79,7 +79,9 @@ async function handleSubmit(e) {
       bookingDate: formData.bookingDate,
       bookingTime: formData.bookingTime,
       numberOfGuests: parseInt(formData.numberOfGuests, 10),
+      Confirm: 'Not Confirmed Yet',
       createdAt: serverTimestamp(),
+
     });
 
     // Call backend API to send booking email to restaurant
