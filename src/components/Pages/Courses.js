@@ -211,7 +211,7 @@ const Course = () => {
           alert("Booking Confirmed!");
       
           // Call API to send booking confirmation email
-          const response = await fetch("http://localhost:5000/send-master-booking-email", {
+          const response = await fetch("https://foodserver-eta.vercel.app/send-master-booking-email", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

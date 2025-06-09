@@ -80,7 +80,7 @@ const logOutHandle = () => {
   useEffect(() => {
     const sendReminderEmails = async () => {
       try {
-        const response = await fetch("http://localhost:5000/send-reminders", {
+        const response = await fetch("https://foodserver-eta.vercel.app/send-reminders", {
           method: "POST",
         });
         if (!response.ok) {

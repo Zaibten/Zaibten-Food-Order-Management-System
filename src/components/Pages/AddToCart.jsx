@@ -95,7 +95,7 @@ const handleOrderSubmit = async () => {
     setShowModal(false);
     window.dispatchEvent(new Event("cartUpdated"));
 
-    await fetch("http://localhost:5000/send-order-email", {
+    await fetch("https://foodserver-eta.vercel.app/send-order-email", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

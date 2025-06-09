@@ -127,7 +127,7 @@ const confirmBooking = async () => {
       maxBookings: selectedClass.maxBookings - 1,
     });
 
-    await fetch("http://localhost:5000/mastersend-booking-email", {
+    await fetch("https://foodserver-eta.vercel.app/mastersend-booking-email", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
