@@ -7,7 +7,7 @@ const Carousel = () => {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/images")
+    fetch("http://localhost:5000/api/images")
       .then((res) => res.json())
       .then((data) => setImages(data))
       .catch((err) => console.error("Image fetch error:", err));

@@ -107,10 +107,11 @@ const ShopCard = () => {
     <div className="shop-card">
       <div className="shop-logo-container">
         <img
-          src={require("../../assets/logo.png")}
-          className="shop-logo"
-          alt="Shop Logo"
-        />
+  src={doc.imageURL}
+  className="shop-logo"
+  alt={`${doc.shopName} Logo`}
+/>
+
       </div>
       <div className="card-info-bg">
         <h6 className="shop-name">{doc.shopName}</h6>

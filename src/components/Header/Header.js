@@ -48,21 +48,34 @@ useEffect(() => {
 }, []);
 
 
+const logOutHandle = () => {
+  const confirmLogout = window.confirm(
+    "Are you sure you want to log out? This will log you out of your account."
+  );
+  if (confirmLogout) {
+    // Clear Redux states
+    dispatch(userLogout());
+    dispatch(professionalLogOut());
 
-  const logOutHandle = () => {
-    const confirmLogout = window.confirm(
-      "Are you sure you want to log out? This will log you out of your account."
-    );
-    if (confirmLogout) {
-      dispatch(userLogout());
-      dispatch(professionalLogOut());
-      localStorage.setItem("email", "");
-      localStorage.removeItem("userState");
-      setEmail(null);
-      navigate("/");
-      sendMessage("Logout Successful!");
-    }
-  };
+    // Clear local storage values
+    localStorage.removeItem("userState");
+    localStorage.removeItem("email");
+    localStorage.removeItem("cart");  // Clear cart
+    localStorage.removeItem("authState");  // Clear authState
+
+    // Optional: Clear all of localStorage if necessary
+    // localStorage.clear();
+
+    setEmail(null);
+    navigate("/");
+    sendMessage("Logout Successful!");
+
+    // Optional: Trigger a custom event to update cart display
+    const event = new Event("cartUpdated");
+    window.dispatchEvent(event);
+  }
+};
+
 
   useEffect(() => {
     const sendReminderEmails = async () => {
@@ -298,8 +311,7 @@ Welcome to Food Planet! Enjoy delicious meals delivered fast, fresh and the best
 
   {[
     { to: "/search", text: "RESTAURENTS", icon: "🍽️" },
-    { to: "/artistportfolio", text: "TABLE BOOKING", icon: "📅" },
-    { to: "/courses", text: "OUR NETWORK", icon: "🌐" },
+    { to: "/tablebooking", text: "TABLE BOOKING", icon: "📅" },
     { to: "/contact", text: "CONTACT US", icon: "☎️" },
     
   ].map((link, i) => (

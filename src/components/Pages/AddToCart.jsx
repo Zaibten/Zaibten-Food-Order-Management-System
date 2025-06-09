@@ -95,6 +95,23 @@ const handleOrderSubmit = async () => {
     setShowModal(false);
     window.dispatchEvent(new Event("cartUpdated"));
 
+    await fetch("http://localhost:5000/send-order-email", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    to: userEmail,
+    name,
+    cartItems,
+    total: cartItems.reduce(
+      (sum, item) => sum + item.quantity * Number(item.Price),
+      0
+    ),
+    address: `${flat}, ${address}`,
+  }),
+});
+
     if (paymentMethod === "Card") {
       window.location.href = "https://www.google.com/"; // Replace with actual card payment URL
     } else {
