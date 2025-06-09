@@ -55,6 +55,14 @@ export default function TableBooking() {
 
 async function handleSubmit(e) {
   e.preventDefault();
+
+  // 🔒 Check if email exists in localStorage
+  const localEmail = localStorage.getItem("email");
+  if (!localEmail) {
+    setMessage("Please log in before booking a table.");
+    return;
+  }
+
   if (!selectedRestaurant) {
     setMessage("Please select a restaurant first.");
     return;
@@ -70,7 +78,6 @@ async function handleSubmit(e) {
   }
 
   try {
-    // Save booking to Firestore
     await addDoc(collection(db, "tableBookings"), {
       restaurantId: selectedRestaurant.id,
       restaurantName: selectedRestaurant.name,
@@ -79,39 +86,38 @@ async function handleSubmit(e) {
       bookingDate: formData.bookingDate,
       bookingTime: formData.bookingTime,
       numberOfGuests: parseInt(formData.numberOfGuests, 10),
-      Confirm: 'Not Confirmed Yet',
+      Confirm: "Not Confirmed Yet",
       createdAt: serverTimestamp(),
-
     });
 
-    // Call backend API to send booking email to restaurant
     try {
-      const response = await fetch("https://foodserver-eta.vercel.app/send-tablebooking-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          restaurantEmail: selectedRestaurant.email,
-          restaurantName: selectedRestaurant.shopName,
-          userName: formData.userName,
-          userEmail: formData.userEmail,
-          bookingDate: formData.bookingDate,
-          bookingTime: formData.bookingTime,
-          numberOfGuests: parseInt(formData.numberOfGuests, 10),
-        }),
-      });
+      const response = await fetch(
+        "https://foodserver-eta.vercel.app/send-tablebooking-email",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            restaurantEmail: selectedRestaurant.email,
+            restaurantName: selectedRestaurant.shopName,
+            userName: formData.userName,
+            userEmail: formData.userEmail,
+            bookingDate: formData.bookingDate,
+            bookingTime: formData.bookingTime,
+            numberOfGuests: parseInt(formData.numberOfGuests, 10),
+          }),
+        }
+      );
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Email sending failed");
+      if (!response.ok)
+        throw new Error(data.error || "Email sending failed");
       console.log("Booking email sent successfully.");
     } catch (emailError) {
       console.error("Failed to send booking email:", emailError);
       setMessage("Booking saved but failed to send email notification.");
     }
 
-    // Show success modal
     setShowModal(true);
-
-    // Reset form and restaurant selection
     setFormData({
       userName: "",
       userEmail: "",
@@ -128,12 +134,23 @@ async function handleSubmit(e) {
 }
 
 
+
   // Close modal handler
   function closeModal() {
     setShowModal(false);
   }
 
   if (loading) return <div style={styles.loading}>Loading restaurants...</div>;
+
+  const currentTime = new Date();
+const formattedCurrentTime = currentTime
+  .toTimeString()
+  .split(" ")[0]
+  .slice(0, 5); // HH:MM format
+
+const isTodaySelected = formData.bookingDate === today;
+const minTime = isTodaySelected ? formattedCurrentTime : "00:00";
+
 
   return (
     <div>
@@ -220,13 +237,15 @@ async function handleSubmit(e) {
             <div style={styles.formGroup}>
               <label style={styles.label}>Booking Time</label>
               <input
-                type="time"
-                name="bookingTime"
-                value={formData.bookingTime}
-                onChange={handleChange}
-                style={styles.input}
-                required
-              />
+  type="time"
+  name="bookingTime"
+  value={formData.bookingTime}
+  onChange={handleChange}
+  style={styles.input}
+  required
+  min={minTime}
+/>
+
             </div>
 
             <div style={styles.formGroup}>

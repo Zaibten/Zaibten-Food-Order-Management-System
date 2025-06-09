@@ -52,10 +52,20 @@ const AddToCartPage = () => {
     0
   );
 
-  const handleCheckoutClick = () => {
-    if (cartItems.length === 0) return alert("Cart is empty!");
-    setShowModal(true);
-  };
+const handleCheckoutClick = () => {
+  if (cartItems.length === 0) return alert("Cart is empty!");
+
+  const userEmail = localStorage.getItem("email");
+
+  if (!userEmail) {
+    // Redirect to login if email is not found
+    window.location.href = "/login";
+    return;
+  }
+
+  setShowModal(true); // Show delivery modal if email exists
+};
+
 
 const handleOrderSubmit = async () => {
   const { name, contact, address, flat, paymentMethod } = deliveryDetails;
