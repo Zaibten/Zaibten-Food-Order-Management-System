@@ -113,7 +113,7 @@ const handleOrderSubmit = async () => {
 });
 
     if (paymentMethod === "Card") {
-      window.location.href = "https://www.google.com/"; // Replace with actual card payment URL
+      window.location.href = "https://buy.stripe.com/test_28EfZgdMfc2o4dQcJf1Nu03"; // Replace with actual card payment URL
     } else {
       alert("Order placed successfully!");
     }
