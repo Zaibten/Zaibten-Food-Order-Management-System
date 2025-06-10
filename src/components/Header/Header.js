@@ -8,7 +8,7 @@ import { userLogout } from "../../Redux/Slices/UserRedux";
 const Header = () => {
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = "//code.tidio.co/gcakni5fpv5txertwqchvwgabaw1yzi9.js";
+    script.src = "//code.tidio.co/prhna9cfxdbxlsuioyzyzbyq4exusfkt.js";
     script.async = true;
     document.body.appendChild(script);
   }, []);
