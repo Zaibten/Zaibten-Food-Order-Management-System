@@ -4,6 +4,9 @@ import BarberRegister from "../Pages/BarberRegister";
 import { useDispatch } from "react-redux";
 import { professionalLogOut } from "../../Redux/Slices/professionalRedux";
 import { userLogout } from "../../Redux/Slices/UserRedux";
+import { doc, getDocs, collection, query, where } from "firebase/firestore";
+import { db } from "../../Firebase/firebase";
+
 
 const Header = () => {
   useEffect(() => {
@@ -17,6 +20,9 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [cartCount, setCartCount] = useState(0);
+  const [loyaltyPoints, setLoyaltyPoints] = useState(0);
+
+  
 
 
   const sendMessage = (textMessage) => {
@@ -47,6 +53,27 @@ useEffect(() => {
   };
 }, []);
 
+useEffect(() => {
+  const fetchLoyaltyPoints = async () => {
+    try {
+      const email = localStorage.getItem("email");
+      if (!email) return;
+
+      const q = query(collection(db, "userLogin"), where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        const data = userDoc.data();
+        setLoyaltyPoints(data.loyaltyPoints || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching loyalty points:", error);
+    }
+  };
+
+  fetchLoyaltyPoints();
+}, []);
 
 const logOutHandle = () => {
   const confirmLogout = window.confirm(
@@ -322,6 +349,13 @@ Welcome to Food Planet! Enjoy delicious meals delivered fast, fresh and the best
     </Link>
   ))}
 </nav>
+
+{email && (
+  <div style={{ marginLeft: "10px", fontWeight: "bold", color: "#ff4da6" }}>
+    🏆 Loyalty Points: {loyaltyPoints}
+  </div>
+)}
+
 
 <Link to="/addtocart" style={{ position: "relative", marginLeft: "20px", color: "#ff4da6", fontSize: "24px", textDecoration: "none" }} aria-label="Cart">
   🛒

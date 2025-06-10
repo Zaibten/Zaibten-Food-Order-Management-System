@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from "react";
 import {
-  collection,
+collection,
   addDoc,
+  getDocs,
+  query,
+  where,
+  updateDoc,
+  doc,
 } from "firebase/firestore";
 import { db } from "../../Firebase/firebase";
+import { useNavigate } from "react-router-dom";
+
 
 const AddToCartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+  const [loyaltyPoints, setLoyaltyPoints] = useState(0);
+const [couponRedeemed, setCouponRedeemed] = useState(false);
+
   const [deliveryDetails, setDeliveryDetails] = useState({
     name: "",
     contact: "",
@@ -19,6 +30,29 @@ const AddToCartPage = () => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(storedCart);
   }, []);
+  
+  useEffect(() => {
+  const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+  setCartItems(storedCart);
+
+  const userEmail = localStorage.getItem("email");
+  if (userEmail) {
+    const fetchLoyaltyPoints = async () => {
+      const usersRef = collection(db, "userLogin");
+      const q = query(usersRef, where("email", "==", userEmail));
+      const snapshot = await getDocs(q);
+      if (!snapshot.empty) {
+        const userDoc = snapshot.docs[0];
+        const points = userDoc.data().loyaltyPoints || 0;
+        setLoyaltyPoints(points);
+      }
+    };
+
+    fetchLoyaltyPoints();
+  }
+}, []);
+
+
 
   const updateCart = (updatedItems) => {
     setCartItems(updatedItems);
@@ -47,10 +81,14 @@ const AddToCartPage = () => {
     updateCart(updated);
   };
 
-  const totalPrice = cartItems.reduce(
-    (acc, item) => acc + item.quantity * Number(item.Price),
-    0
-  );
+const subtotal = cartItems.reduce(
+  (acc, item) => acc + item.quantity * Number(item.Price),
+  0
+);
+
+const discount = couponRedeemed && subtotal > 300 ? 300 : 0;
+const totalPrice = subtotal - discount;
+
 
 const handleCheckoutClick = () => {
   if (cartItems.length === 0) return alert("Cart is empty!");
@@ -73,7 +111,10 @@ const handleOrderSubmit = async () => {
     return alert("Please fill all delivery details and select payment method.");
   }
 
-  const userEmail = localStorage.getItem("email"); // <-- Get user email from localStorage
+  const userEmail = localStorage.getItem("email");
+  if (!userEmail) {
+    return alert("User not logged in.");
+  }
 
   const groupedByRestaurant = cartItems.reduce((acc, item) => {
     if (!acc[item.shopName]) acc[item.shopName] = [];
@@ -91,7 +132,7 @@ const handleOrderSubmit = async () => {
           0
         ),
         deliveryDetails,
-        UserOrderedFrom: userEmail || "Unknown", // <-- Save email here
+        UserOrderedFrom: userEmail,
         status: {
           active: true,
           delivered: false,
@@ -100,38 +141,71 @@ const handleOrderSubmit = async () => {
       });
     }
 
+// 🟨 LOYALTY POINTS LOGIC START
+const usersRef = collection(db, "userLogin");
+const q = query(usersRef, where("email", "==", userEmail));
+const snapshot = await getDocs(q);
+
+if (!snapshot.empty) {
+  const userDoc = snapshot.docs[0];
+  const currentPoints = userDoc.data().loyaltyPoints || 0;
+  let newPoints;
+
+  if (couponRedeemed) {
+    newPoints = 20; // Reset to 20 if coupon was used
+  } else {
+    newPoints = currentPoints + 20; // Else, add 20 normally
+  }
+
+  await updateDoc(doc(db, "userLogin", userDoc.id), {
+    loyaltyPoints: newPoints,
+  });
+
+  // Update local state so UI reflects change immediately (optional)
+  setLoyaltyPoints(newPoints);
+}
+// 🟨 LOYALTY POINTS LOGIC END
+
+
     localStorage.removeItem("cart");
     setCartItems([]);
     setShowModal(false);
     window.dispatchEvent(new Event("cartUpdated"));
 
     await fetch("https://foodserver-eta.vercel.app/send-order-email", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    to: userEmail,
-    name,
-    cartItems,
-    total: cartItems.reduce(
-      (sum, item) => sum + item.quantity * Number(item.Price),
-      0
-    ),
-    address: `${flat}, ${address}`,
-  }),
-});
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: userEmail,
+        name,
+        cartItems,
+        total: cartItems.reduce(
+          (sum, item) => sum + item.quantity * Number(item.Price),
+          0
+        ),
+        address: `${flat}, ${address}`,
+      }),
+    });
 
     if (paymentMethod === "Card") {
-      window.location.href = "https://buy.stripe.com/test_28EfZgdMfc2o4dQcJf1Nu03"; // Replace with actual card payment URL
+      window.location.href = "https://buy.stripe.com/test_28EfZgdMfc2o4dQcJf1Nu03";
     } else {
       alert("Order placed successfully!");
     }
+
+    navigate("/order");
+    
+    window.location.reload();
+    
   } catch (error) {
     console.error("Error placing order:", error);
     alert("Failed to place order.");
   }
 };
+
+
 
 
 
@@ -219,6 +293,30 @@ const handleOrderSubmit = async () => {
               </tr>
             </tbody>
           </table>
+
+          {loyaltyPoints > 200 && !couponRedeemed && (
+  <button
+    onClick={() => setCouponRedeemed(true)}
+    style={{
+      marginTop: 15,
+      padding: "10px 20px",
+      backgroundColor: "#4CAF50",
+      color: "#fff",
+      border: "none",
+      borderRadius: 6,
+      cursor: "pointer",
+    }}
+  >
+    Redeem Coupon (300 Rs OFF)
+  </button>
+)}
+<br></br>
+{couponRedeemed && (
+  <p style={{ color: "#28a745", marginTop: 10 }}>
+    Coupon Applied: ₹300 Discount
+  </p>
+)}
+
 
           <button
             style={{
