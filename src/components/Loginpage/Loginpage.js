@@ -285,7 +285,7 @@ const handleSignUp = async (e) => {
             </h3>
 
             <p className="loginp">
-              Glam The Girl, your one stop solution for Grooming
+              Fod Planet, your one stop solution for cravings
             </p>
 
             <button
@@ -304,7 +304,7 @@ const handleSignUp = async (e) => {
             <h3 className="loginh3">Already Registered ?</h3>
 
             <p className="loginp">
-              Glam The Girl, your one stop solution for Grooming
+               Fod Planet, your one stop solution for cravings
             </p>
 
             <button
