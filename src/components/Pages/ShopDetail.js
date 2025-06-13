@@ -588,7 +588,7 @@ const addToCart = (service) => {
           }
 
           .submit-btn {
-  background: linear-gradient(135deg, #ff69b4, #ff85c1); /* soft pink to warm pink */
+  background: linear-gradient(135deg,rgb(66, 58, 62),rgb(121, 87, 104)); /* soft pink to warm pink */
   color: white;
   padding: 10px 20px;
   border: none;
@@ -598,7 +598,7 @@ const addToCart = (service) => {
 }
 
 .submit-btn:hover {
-  background: linear-gradient(135deg, #ff4fa8, #ff6fb7); /* slightly deeper pink on hover */
+  background: linear-gradient(135deg,rgb(126, 113, 119),rgb(114, 50, 82)); /* slightly deeper pink on hover */
 }
 
         `}

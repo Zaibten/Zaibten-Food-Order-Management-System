@@ -7,7 +7,8 @@
   }
   
   .hotpink-text {
-    color: #ff69b4;
+    font-weight: bold;
+    color: #d68378;
   }
   
   .section {
@@ -21,9 +22,10 @@
   
   .highlight-border {
     padding: 0.5rem 1rem;
-    border: 2px solid #ff69b4;
+    border: 2px solid #772318;
     border-radius: 5px;
     display: inline-block;
+    font-weight: bold; /* This makes it bold */
   }
   
   /* Statistics Section */
@@ -48,7 +50,7 @@
   }
   
   .stat-card h2 {
-    color: #ff69b4;
+    color: #5c2b43;
     font-size: 2.5rem;
     font-weight: bold;
   }

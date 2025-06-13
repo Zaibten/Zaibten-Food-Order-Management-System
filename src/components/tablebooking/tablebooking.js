@@ -23,6 +23,8 @@ export default function TableBooking() {
   });
   const [message, setMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+
 
   useEffect(() => {
     async function fetchRestaurants() {
@@ -258,9 +260,18 @@ export default function TableBooking() {
               />
             </div>
 
-            <button type="submit" style={styles.button}>
-              Book Table
-            </button>
+            <button
+  type="submit"
+  style={{
+    ...styles.button,
+    ...(isHovering ? styles.buttonHover : {}),
+  }}
+  onMouseEnter={() => setIsHovering(true)}
+  onMouseLeave={() => setIsHovering(false)}
+>
+  Book Table
+</button>
+
           </form>
 
           {message && (
@@ -300,15 +311,13 @@ export default function TableBooking() {
 }
 
 const styles = {
-  //... your existing styles here, plus:
-
   modalOverlay: {
     position: "fixed",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.4)",
+    backgroundColor: "rgba(0,0,0,0.5)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -316,117 +325,127 @@ const styles = {
   },
   modal: {
     backgroundColor: "#fff",
-    padding: 30,
-    borderRadius: 12,
-    boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
-    maxWidth: 400,
+    padding: "30px 25px",
+    borderRadius: 16,
+    boxShadow: "0 10px 35px rgba(0,0,0,0.15)",
+    maxWidth: 420,
     width: "90%",
     textAlign: "center",
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    fontFamily: "'Poppins', sans-serif",
   },
   modalButton: {
-    backgroundColor: "#007bff",
+    backgroundColor: "#1d4ed8",
     color: "#fff",
     border: "none",
-    padding: "10px 20px",
+    padding: "12px 24px",
     borderRadius: 8,
     cursor: "pointer",
-    fontWeight: "600",
+    fontWeight: 600,
     fontSize: 16,
+    transition: "background-color 0.3s ease",
   },
   pageContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: "#f0f2f5",
     minHeight: "100vh",
-    padding: 20,
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    padding: 24,
+    fontFamily: "'Poppins', sans-serif",
     display: "flex",
     justifyContent: "center",
     alignItems: "flex-start",
   },
   card: {
-    backgroundColor: "#fafafa",
-    maxWidth: 700,
+    backgroundColor: "#ffffff",
+    maxWidth: 900,
     width: "100%",
-    borderRadius: 12,
-    boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-    padding: 30,
+    borderRadius: 16,
+    boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+    padding: 40,
     boxSizing: "border-box",
   },
   heading: {
-    marginBottom: 25,
-    fontWeight: "700",
-    fontSize: 28,
-    color: "#333",
+    marginBottom: 30,
+    fontWeight: 700,
+    fontSize: 30,
+    color: "#1f2937",
     textAlign: "center",
   },
   label: {
     display: "block",
-    marginBottom: 6,
-    fontWeight: 600,
-    color: "#555",
+    marginBottom: 8,
+    fontWeight: 500,
+    color: "#374151",
     fontSize: 14,
   },
   select: {
     width: "100%",
-    padding: "10px 12px",
+    padding: "12px 14px",
     fontSize: 16,
-    borderRadius: 8,
-    border: "1.8px solid #ccc",
-    marginBottom: 20,
+    borderRadius: 10,
+    border: "1.5px solid #d1d5db",
+    marginBottom: 22,
     outline: "none",
-    transition: "border-color 0.3s",
+    transition: "border-color 0.3s ease",
     cursor: "pointer",
   },
   restaurantCard: {
-    backgroundColor: "#fff",
+    backgroundColor: "#f9fafb",
     borderRadius: 12,
-    boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
-    padding: 15,
+    boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+    padding: 20,
     marginBottom: 25,
-    color: "#444",
+    color: "#374151",
   },
   restaurantImage: {
     width: "100%",
     borderRadius: 10,
     objectFit: "cover",
-    marginBottom: 15,
-    maxHeight: 200,
+    marginBottom: 12,
+    maxHeight: 180,
   },
   form: {
     display: "flex",
     flexDirection: "column",
   },
   formGroup: {
-    marginBottom: 18,
+    marginBottom: 20,
   },
   input: {
     width: "100%",
-    padding: "10px 12px",
+    padding: "12px 14px",
     fontSize: 16,
-    borderRadius: 8,
-    border: "1.8px solid #ccc",
+    borderRadius: 10,
+    border: "1.5px solid #d1d5db",
     outline: "none",
-    transition: "border-color 0.3s",
+    transition: "border-color 0.3s ease",
     boxSizing: "border-box",
   },
-  button: {
-    padding: "12px 0",
-    backgroundColor: "#007bff",
-    border: "none",
-    borderRadius: 10,
-    color: "#fff",
-    fontWeight: "700",
-    fontSize: 18,
-    cursor: "pointer",
-    transition: "background-color 0.3s",
-    marginTop: 10,
-  },
+button: {
+  padding: "12px 0",
+  background: "linear-gradient(135deg, #000000, #434343)", // black gradient
+  border: "none",
+  borderRadius: 10,
+  color: "#ffffff",
+  fontWeight: "700",
+  fontSize: 18,
+  cursor: "pointer",
+  transition: "all 0.3s ease",
+  marginTop: 10,
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+},
+
+// Add hover state with inline event
+buttonHover: {
+  background: "linear-gradient(135deg, #333333, #000000)",
+  transform: "scale(1.02)",
+},
+
   loading: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 600,
-    color: "#555",
+    color: "#4b5563",
     display: "flex",
     justifyContent: "center",
-    marginTop: 40,
+    marginTop: 50,
   },
 };
+

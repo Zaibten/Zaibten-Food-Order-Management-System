@@ -1,93 +1,226 @@
 import React from "react";
-import "./About.css";
 
 const About = () => {
-  return (
-    <div className="about-page">
-      {/* Who We Are Section */}
-      <div className="container section">
-        <h3 className="text-center animate-header hotpink-text">
-          <span className="highlight-border">Who We Are ?</span>
-        </h3>
-        <div className="row align-items-center mt-4">
-          <div className="col-12 col-sm-6 animate-fade">
-           <p className="about-text">
-  Welcome to <strong className="hotpink-text">Food Planet</strong>, your
-  go-to destination for ordering delicious food from your favorite restaurants!
-  Our mission is to connect you with the best eateries in your area and make
-  ordering your next meal quick and easy. Thank you for choosing{" "}
-  <strong className="hotpink-text">Food Planet!</strong>
-</p>
+  const styles = {
+    page: {
+      fontFamily: "'Segoe UI', sans-serif",
+      backgroundColor: "#fff",
+      color: "#222",
+      padding: "0",
+      margin: "0",
+    },
+    section: {
+      maxWidth: "1200px",
+      margin: "0 auto",
+      padding: "80px 20px",
+    },
+    header: {
+      fontSize: "42px",
+      fontWeight: "700",
+      textAlign: "center",
+      marginBottom: "20px",
+      color: "#111",
+    },
+    subHeader: {
+      textAlign: "center",
+      fontSize: "18px",
+      color: "#666",
+      marginBottom: "60px",
+      maxWidth: "600px",
+      marginInline: "auto",
+    },
+    row: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "40px",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    columnText: {
+      flex: "1 1 500px",
+      fontSize: "16px",
+      color: "#444",
+      lineHeight: "1.7",
+    },
+    columnImage: {
+      flex: "1 1 400px",
+    },
+    image: {
+      width: "100%",
+      borderRadius: "12px",
+      boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+      objectFit: "cover",
+    },
+    highlight: {
+      backgroundColor: "#f3f3f3",
+      padding: "40px 30px",
+      borderRadius: "12px",
+      fontSize: "18px",
+      fontWeight: "500",
+      textAlign: "center",
+      color: "#000",
+      margin: "60px 0",
+    },
+    stats: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "20px",
+      justifyContent: "space-between",
+      marginTop: "40px",
+    },
+    statCard: {
+      flex: "1 1 250px",
+      backgroundColor: "#fafafa",
+      padding: "30px 20px",
+      borderRadius: "10px",
+      textAlign: "center",
+      boxShadow: "0 4px 10px rgba(0,0,0,0.04)",
+    },
+    statNumber: {
+      fontSize: "30px",
+      fontWeight: "bold",
+      color: "#e91e63",
+    },
+    statLabel: {
+      fontSize: "14px",
+      color: "#666",
+      marginTop: "8px",
+    },
+    testimonials: {
+      marginTop: "80px",
+    },
+    testimonialCard: {
+      backgroundColor: "#fdfdfd",
+      borderLeft: "5px solid #e91e63",
+      padding: "30px",
+      marginBottom: "30px",
+      borderRadius: "8px",
+      boxShadow: "0 4px 10px rgba(0,0,0,0.04)",
+    },
+    testimonialText: {
+      fontStyle: "italic",
+      color: "#444",
+    },
+    testimonialAuthor: {
+      marginTop: "12px",
+      fontWeight: "bold",
+      color: "#000",
+    },
+    footer: {
+      marginTop: "80px",
+      padding: "30px 20px",
+      textAlign: "center",
+      fontSize: "14px",
+      color: "#aaa",
+      borderTop: "1px solid #eee",
+    },
+  };
 
+  return (
+    <div style={styles.page}>
+      <div style={styles.section}>
+       <h1
+  style={{
+    fontSize: "40px",
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: "30px",
+    background: "linear-gradient(90deg, #f5f7fa 0%,rgb(159, 167, 179) 100%)",
+    color: "#333",
+    padding: "20px",
+    borderRadius: "12px",
+    boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
+    letterSpacing: "1px",
+    textTransform: "uppercase",
+    fontFamily: "'Segoe UI', sans-serif"
+  }}
+>
+  ABOUT FOOD PLANET
+</h1>
+
+        <p style={styles.subHeader}>
+          Bridging your cravings and the best food near you — fast, fresh, and
+          reliable.
+        </p>
+
+        {/* Main Content */}
+        <div style={styles.row}>
+          <div style={styles.columnText}>
+            <p>
+              <strong>Food Planet</strong> is the easiest way to discover and
+              enjoy food around you. Whether you're looking for quick delivery,
+              gourmet meals, or your favorite local joints — we’re here to help
+              you eat better every day.
+            </p>
+            <p>
+              We partner with top restaurants and offer real-time tracking,
+              seamless ordering, and a satisfaction guarantee. Our mission is to
+              simplify food delivery while elevating your experience with every
+              meal.
+            </p>
           </div>
-          <div className="col-12 col-sm-6 animate-zoom">
+          <div style={styles.columnImage}>
             <img
               src="https://media.istockphoto.com/id/1446478827/photo/a-chef-is-cooking-in-his-restaurants-kitchen.jpg?s=612x612&w=0&k=20&c=jwKJmGErrLe2XsTWNYEEyiNicudYVA4j8jvnTiJdp58="
-              alt="RESTAURENT"
-              className="w-100 rounded-shadow"
+              alt="Delicious food"
+              style={styles.image}
             />
           </div>
         </div>
-      </div>
 
-      {/* Statistics Section */}
-      <div className="container section animate-fade-up">
-        <div className="stats-container">
-          <div className="stat-card animate-scale">
-            <h2>2K+</h2>
-            <p>Happy Customers</p>
+        {/* Highlight Section */}
+        <div style={styles.highlight}>
+          “We deliver not just meals, but comfort, quality, and satisfaction.”
+        </div>
+
+        {/* Statistics */}
+        <div style={styles.stats}>
+          <div style={styles.statCard}>
+            <div style={styles.statNumber}>12K+</div>
+            <div style={styles.statLabel}>Orders Delivered</div>
           </div>
-          <div className="stat-card animate-scale">
-            <h2>#1</h2>
-            <p>Worldwide Ranking</p>
+          <div style={styles.statCard}>
+            <div style={styles.statNumber}>1.8K+</div>
+            <div style={styles.statLabel}>Restaurants Partnered</div>
           </div>
-          <div className="stat-card animate-scale">
-            <h2>500+</h2>
-            <p>Partnered Shops</p>
+          <div style={styles.statCard}>
+            <div style={styles.statNumber}>98.7%</div>
+            <div style={styles.statLabel}>Customer Satisfaction</div>
           </div>
         </div>
-      </div>
 
-      {/* Testimonials Section */}
-      <div className="testimonial-section section">
-        <h3 className="text-center hotpink-text animate-header">
-          What Our Clients Say
-        </h3>
-        <div className="testimonial-container">
-          <div className="testimonial-card animate-fade">
-            <p>
-              "I love how easy it is to find RESTAURENTS through Food Planet!
-              Their platform is user-friendly and always up-to-date."
+        {/* Testimonials */}
+        <div style={styles.testimonials}>
+          <h2 style={{ ...styles.header, fontSize: "28px", marginBottom: "40px" }}>
+            What Our Customers Say
+          </h2>
+
+          <div style={styles.testimonialCard}>
+            <p style={styles.testimonialText}>
+              "Fast delivery, beautiful app, and super friendly support. I order
+              every week from Food Planet!"
             </p>
-            <h5>- Sarah J.</h5>
+            <div style={styles.testimonialAuthor}>– Sarah J.</div>
           </div>
-          <div className="testimonial-card animate-fade-up">
-            <p>
-              "The best experience ever! The reviews helped me choose the
-              perfect RESTAURENT for my makeover."
+
+
+
+          <div style={styles.testimonialCard}>
+            <p style={styles.testimonialText}>
+              "Food Planet completely changed how I eat. It’s so easy and smooth,
+              and the meals are always hot!"
             </p>
-            <h5>- Emily R.</h5>
+            <div style={styles.testimonialAuthor}>– Mike T.</div>
           </div>
-          <div className="testimonial-card animate-fade">
-            <p>
-              "I can’t imagine going back to the old ways of finding RESTAURENTS.
-              Food Planet makes everything so convenient!"
+
+          <div style={styles.testimonialCard}>
+            <p style={styles.testimonialText}>
+              "Fast delivery! It’s so easy and smooth and super friendly support."
             </p>
-            <h5>- Olivia P.</h5>
+            <div style={styles.testimonialAuthor}>– Nimra.</div>
           </div>
+          
         </div>
-      </div>
-
-      {/* Our Mission Section */}
-      <div className="container section animate-fade-up">
-        <h3 className="text-center hotpink-text">Our Mission</h3>
-        <p className="text-center mission-text">
-          At Food Planet, our mission is to empower individuals to express
-          themselves through their style. We aim to bridge the gap between
-          clients and top-notch RESTAURENTS, ensuring every experience is a memorable
-          one. Whether it’s a quick trim or a complete transformation, we are
-          here to make it happen.
-        </p>
       </div>
     </div>
   );

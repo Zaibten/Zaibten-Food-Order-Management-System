@@ -60,6 +60,8 @@ function App() {
         <Route path="/recommendation" element={<Recommendation />} />
         <Route path="/tablebooking" element={<TableBooking />} />
         {/* <Route path="/glamthegirlcourse" element={<Course />} /> */}
+        
+        <Route path="/order" element={<Order />} />
         <Route path="/Profile" element={<Profile />} />
         <Route path="/shop/:id" element={<ShopDetail />} />
         <Route path="/shop/:parent/:id/booking" element={<BookShop />} />
@@ -78,7 +80,6 @@ function App() {
         <Route path="/search" element={<SearchShop />} />
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/addtocart" element={<AddToCart />} />
-        <Route path="/order" element={<Order />} />
         <Route path="/courses" element={<Course />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/suggestion" element={<Suggestion />} />

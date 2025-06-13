@@ -1,436 +1,260 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import BarberRegister from "../Pages/BarberRegister";
-import { useDispatch } from "react-redux";
-import { professionalLogOut } from "../../Redux/Slices/professionalRedux";
-import { userLogout } from "../../Redux/Slices/UserRedux";
-import { doc, getDocs, collection, query, where } from "firebase/firestore";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { getDocs, collection, query, where } from "firebase/firestore";
 import { db } from "../../Firebase/firebase";
 
-
 const Header = () => {
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "//code.tidio.co/prhna9cfxdbxlsuioyzyzbyq4exusfkt.js";
-    script.async = true;
-    document.body.appendChild(script);
-  }, []);
-
-  const [email, setEmail] = useState(null);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [email, setEmail] = useState(localStorage.getItem("email"));
   const [cartCount, setCartCount] = useState(0);
   const [loyaltyPoints, setLoyaltyPoints] = useState(0);
+  const [showMenu, setShowMenu] = useState(false);
 
-  
-
-
-  const sendMessage = (textMessage) => {
-    alert(textMessage);
-  };
-
-  const getDisplayName = (email) => {
-    if (!email) return "";
-    const username = email.split("@")[0];
-    const match = username.match(/^[^\d]+/);
-    return match ? match[0] : username;
-  };
-useEffect(() => {
-  const updateCartCount = () => {
-    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-    setCartCount(cartItems.length);
-  };
-
-  // Initial load
-  updateCartCount();
-
-  // Listen for custom event
-  window.addEventListener("cartUpdated", updateCartCount);
-
-  // Cleanup listener on unmount
-  return () => {
-    window.removeEventListener("cartUpdated", updateCartCount);
-  };
-}, []);
-
-useEffect(() => {
-  const fetchLoyaltyPoints = async () => {
-    try {
-      const email = localStorage.getItem("email");
-      if (!email) return;
-
-      const q = query(collection(db, "userLogin"), where("email", "==", email));
-      const querySnapshot = await getDocs(q);
-
-      if (!querySnapshot.empty) {
-        const userDoc = querySnapshot.docs[0];
-        const data = userDoc.data();
-        setLoyaltyPoints(data.loyaltyPoints || 0);
-      }
-    } catch (error) {
-      console.error("Error fetching loyalty points:", error);
-    }
-  };
-
-  fetchLoyaltyPoints();
-}, []);
-
-const logOutHandle = () => {
-  const confirmLogout = window.confirm(
-    "Are you sure you want to log out? This will log you out of your account."
-  );
-  if (confirmLogout) {
-    // Clear Redux states
-    dispatch(userLogout());
-    dispatch(professionalLogOut());
-
-    // Clear local storage values
-    localStorage.removeItem("userState");
-    localStorage.removeItem("email");
-    localStorage.removeItem("cart");  // Clear cart
-    localStorage.removeItem("authState");  // Clear authState
-
-    // Optional: Clear all of localStorage if necessary
-    // localStorage.clear();
-
-    setEmail(null);
-    navigate("/");
-    sendMessage("Logout Successful!");
-
-    // Optional: Trigger a custom event to update cart display
-    const event = new Event("cartUpdated");
-    window.dispatchEvent(event);
-  }
-};
-
+  const path = location.pathname;
+  const displayName = email ? email.split("@")[0].replace(/[0-9]/g, "") : "";
 
   useEffect(() => {
-    const sendReminderEmails = async () => {
+    const updateCartCount = () => {
+      const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+      setCartCount(cartItems.length);
+    };
+    updateCartCount();
+    window.addEventListener("cartUpdated", updateCartCount);
+    return () => window.removeEventListener("cartUpdated", updateCartCount);
+  }, []);
+
+  useEffect(() => {
+    const fetchLoyaltyPoints = async () => {
       try {
-        const response = await fetch("https://foodserver-eta.vercel.app/send-reminders", {
-          method: "POST",
-        });
-        if (!response.ok) {
-          throw new Error("Failed to send reminders");
+        const userEmail = localStorage.getItem("email");
+        if (!userEmail) return;
+        const q = query(collection(db, "userLogin"), where("email", "==", userEmail));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const data = querySnapshot.docs[0].data();
+          setLoyaltyPoints(data.loyaltyPoints || 0);
         }
-        console.log("Reminder emails sent successfully.");
       } catch (error) {
-        console.error("Error sending reminder emails:", error);
+        console.error("Error fetching loyalty points:", error);
       }
     };
-
-    const interval = setInterval(sendReminderEmails, 24 * 60 * 60 * 1000);
-
-    return () => clearInterval(interval);
+    fetchLoyaltyPoints();
   }, []);
 
-  useEffect(() => {
-    const storedEmail = localStorage.getItem("email");
-    if (storedEmail) {
-      setEmail(storedEmail);
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to logout?")) {
+      localStorage.removeItem("email");
+      setEmail(null);
+      navigate("/");
     }
-  }, []);
+  };
 
-  useEffect(() => {
-    if (email) {
-      localStorage.setItem("email", email);
-    }
-  }, [email]);
+  if (["/dashboard", "/login"].includes(path)) return null;
 
-  const location = useLocation();
-  const hideHeaderOnPath = [
-    "/dashboard",
-    "/dashboard/schedules-professional",
-    "/dashboard/add-services",
-    "/login",
-  ];
-
-  if (hideHeaderOnPath.includes(location.pathname)) {
-    return null;
-  }
+  const navStyle = (active) => ({
+    padding: "10px 18px",
+    color: active ? "#fff" : "#ccc",
+    backgroundColor: active ? "#ff2d75" : "transparent",
+    borderRadius: "8px",
+    textDecoration: "none",
+    fontWeight: active ? "bold" : "500",
+    fontSize: "14px",
+    transition: "0.3s",
+  });
 
   return (
-    <div>
-      <style>
-        {`
-          /* Animated marquee text */
-          .marquee-header {
-            background: #ff4da6;
-            color: white;
-            font-weight: bold;
-            padding: 8px 20px;
-            overflow: hidden;
-            white-space: nowrap;
-            box-sizing: border-box;
-          }
-          .marquee-header span {
-            display: inline-block;
-            padding-left: 100%;
-            animation: marquee 15s linear infinite;
-          }
-          @keyframes marquee {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
-          }
-
-          /* Food Planet animated heading */
-          .brand-heading {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-weight: 900;
-            font-size: 28px;
-            cursor: default;
-          }
-          .brand-heading .food {
-            color: #ff4da6;
-            position: relative;
-            animation: pulse 3s infinite alternate;
-          }
-          .brand-heading .planet {
-            color:rgb(0, 0, 0);
-            position: relative;
-            animation: glow 3s infinite alternate;
-          }
-          @keyframes pulse {
-            0% { text-shadow: 0 0 5px #ff4da6; }
-            100% { text-shadow: 0 0 20px #ff80c1; }
-          }
-          @keyframes glow {
-            0% { text-shadow: 0 0 8px #ffd6eb; }
-            100% { text-shadow: 0 0 25px #ffe6f0; }
-          }
-
-          /* Icon animation */
-          .brand-icon {
-            font-size: 28px;
-            color: #ff4da6;
-            animation: rotate 6s linear infinite;
-            display: inline-block;
-          }
-          .brand-icon.planet-icon {
-            color: #ffd6eb;
-            animation-direction: reverse;
-          }
-          @keyframes rotate {
-            0% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(180deg) scale(1.2); }
-            100% { transform: rotate(360deg) scale(1); }
-          }
-
-          /* Nav link hover styles */
-          .nav-link-custom {
-            padding: 6px 10px;
-            color: #333;
-            text-decoration: none;
-            font-size: 14px;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            white-space: nowrap;
-          }
-          .nav-link-custom:hover {
-            color: #ff4da6;
-            border: 1px solid #ff4da6;
-            background: #ffd6eb;
-          }
-
-          /* Login button styling */
-          .login-button {
-            padding: 8px 14px;
-            background: #ff4da6;
-            border-radius: 20px;
-            color: #fff;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
-          }
-          .login-button:hover {
-            background: #ff80c1;
-            color: #fff;
-            transform: scale(1.05);
-          }
-
-          /* User avatar hover */
-          .user-avatar {
-            height: 40px;
-            width: 40px;
-            border-radius: 50%;
-            border: 2px solid #ff4da6;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-          }
-          .user-avatar:hover {
-            transform: rotate(5deg) scale(1.1);
-          }
-
-          /* Dropdown menu */
-          .dropdown-menu {
-            min-width: 140px;
-            font-size: 14px;
-          }
-          .dropdown-item {
-            padding: 8px 12px;
-            cursor: pointer;
-            color: #333;
-            text-decoration: none;
-            display: block;
-          }
-          .dropdown-item:hover {
-            background-color: #ffd6eb;
-            color: #ff4da6;
-          }
-        `}
-      </style>
-
-      <div className="navbar-container">
-        <div className="marquee-header">
-          <span>
-Welcome to Food Planet! Enjoy delicious meals delivered fast, fresh and the best flavors, the best prices, all in one place.          </span>
-        </div>
-
+    <>
+      <div
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 1000,
+          fontFamily: "Segoe UI, sans-serif",
+          backgroundColor: "#0d0d0d",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.5)",
+          color: "#fff",
+        }}
+      >
+        {/* Top Bar */}
         <div
           style={{
-            background: "#ffe6f0",
-            padding: "20px 40px",
+            backgroundColor: "#ff2d75",
+            textAlign: "center",
+            padding: "6px",
+            fontSize: "13px",
+            letterSpacing: "0.8px",
+            fontWeight: 500,
+          }}
+        >
+          ❤️ Taste the Best — Fresh Flavors, Just for You!
+        </div>
+
+        {/* Main Header */}
+        <div
+          style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            flexWrap: "nowrap",
-            boxShadow: "0 4px 12px rgba(255, 77, 166, 0.2)",
-            height: "90px",
+            padding: "14px 30px",
+            backgroundColor: "#121212",
+            flexWrap: "wrap",
           }}
         >
-          {/* Left: Brand Heading with icons */}
-      <Link
-  to="/"
-  style={{
-    display: "flex",
-    alignItems: "center",
-    textDecoration: "none",
-    cursor: "pointer",    // <-- Add this line
-  }}
-  aria-label="Food Planet Home"
->
-  <span className="brand-heading" aria-hidden="true">
-    <span className="brand-icon" role="img" aria-label="Food">
-      🍔
-    </span>
-    <span className="food">Food</span>
-    <span className="planet">Planet</span>
-    <span className="brand-icon planet-icon" role="img" aria-label="Planet">
-      🌍
-    </span>
-  </span>
-</Link>
+          {/* Logo */}
+          <Link
+            to="/"
+            style={{
+              fontSize: "22px",
+              fontWeight: "bold",
+              color: "#fff",
+              textDecoration: "none",
+            }}
+          >
+            <span style={{ color: "#ff2d75" }}>🍽️ FoodPlanet</span>
+          </Link>
 
-          {/* Center: Nav Links */}
-       <nav
-  style={{
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    whiteSpace: "nowrap",
-  }}
->
+          {/* Hamburger Icon */}
+          <div
+            className="hamburger"
+            onClick={() => setShowMenu(!showMenu)}
+          >
+            ☰
+          </div>
 
+          {/* Main Navigation */}
+          <div className={`main-nav ${showMenu ? "show" : ""}`}>
+            <Link to="/search" style={navStyle(path === "/search")}>Restaurants</Link>
+            <Link to="/tablebooking" style={navStyle(path === "/tablebooking")}>Book Table</Link>
+            <Link to="/order" style={navStyle(path === "/order")}>Orders</Link>
+            <Link to="/Profile" style={navStyle(path === "/Profile")}>Profile</Link>
+            <Link to="/addtocart" style={navStyle(path === "/cart")}>🛒 Cart ({cartCount})</Link>
 
-  {[
-    { to: "/search", text: "RESTAURENTS", icon: "🍽️" },
-    { to: "/tablebooking", text: "TABLE BOOKING", icon: "📅" },
-    { to: "/contact", text: "CONTACT US", icon: "☎️" },
-    
-  ].map((link, i) => (
-    <Link key={i} to={link.to} className="nav-link-custom">
-      <span style={{ marginRight: "6px" }}>{link.icon}</span>
-      {link.text}
-      
-    </Link>
-  ))}
-</nav>
+            <div style={{
+              backgroundColor: "#1e1e1e",
+              padding: "8px 14px",
+              borderRadius: "8px",
+              color: "#ff2d75",
+              fontWeight: "bold",
+              fontSize: "14px",
+              minWidth: "120px",
+              textAlign: "center",
+              marginTop: "10px"
+            }}>
+              🎁 Loyalty: {loyaltyPoints}
+            </div>
 
-{email && (
-  <div style={{ marginLeft: "10px", fontWeight: "bold", color: "#ff4da6" }}>
-    🏆 Loyalty Points: {loyaltyPoints}
-  </div>
-)}
-
-
-<Link to="/addtocart" style={{ position: "relative", marginLeft: "20px", color: "#ff4da6", fontSize: "24px", textDecoration: "none" }} aria-label="Cart">
-  🛒
-  {cartCount > 0 && (
-    <span
-      style={{
-        position: "absolute",
-        top: "-6px",
-        right: "-10px",
-        background: "#ff4da6",
-        color: "white",
-        borderRadius: "50%",
-        padding: "1px 7px",
-        fontSize: "12px",
-        fontWeight: "bold",
-      }}
-    >
-      {cartCount}
-    </span>
-  )}
-</Link>
-
-          {/* Right: Email + Avatar/Login */}
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            {email && (
-              <span style={{ color: "#333", fontSize: "13px", marginRight: "5px" }}>
-                <strong>{getDisplayName(email)}</strong>
-              </span>
-            )}
             {email ? (
-              <div className="dropdown">
-                <a
-                  href="#!"
-                  id="navbarDropdownMenuAvatar"
-                  role="button"
-                  data-mdb-toggle="dropdown"
+              <>
+                <span style={{ fontSize: "13px", color: "#ccc" }}>
+                  👋 Hello, <b style={{ color: "#fff" }}>{displayName}</b>
+                </span>
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    backgroundColor: "#ff2d75",
+                    color: "#fff",
+                    border: "none",
+                    padding: "8px 16px",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    marginTop: "10px",
+                    transition: "background 0.3s",
+                  }}
                 >
-                  <img
-                    src="https://png.pngtree.com/png-clipart/20220628/original/pngtree-food-logo-png-image_8239850.png"
-                    alt="User Avatar"
-                    className="user-avatar"
-                  />
-                </a>
-                <ul
-                  className="dropdown-menu dropdown-menu-end"
-                  aria-labelledby="navbarDropdownMenuAvatar"
-                >
-                  <li>
-                    <Link to="/Profile" className="dropdown-item">
-                      My profile
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/order" className="dropdown-item">
-                      Order History
-                    </Link>
-                  </li>
-                  <li>
-                    <button className="dropdown-item" onClick={logOutHandle}>
-                      Logout
-                    </button>
-                  </li>
-                </ul>
-              </div>
+                  Logout
+                </button>
+              </>
             ) : (
-              <NavLink to="/login" className="login-button">
+              <Link
+                to="/login"
+                style={{
+                  backgroundColor: "#ff2d75",
+                  color: "#fff",
+                  padding: "8px 16px",
+                  borderRadius: "8px",
+                  textDecoration: "none",
+                  fontWeight: "500",
+                  fontSize: "14px",
+                  marginTop: "10px",
+                }}
+              >
                 Login
-              </NavLink>
+              </Link>
             )}
           </div>
         </div>
       </div>
 
-      <BarberRegister />
-    </div>
+      {/* CSS styles */}
+      <style>{`
+        .hamburger {
+          display: none;
+          font-size: 26px;
+          color: white;
+          cursor: pointer;
+        }
+
+        .main-nav {
+          display: flex;
+          gap: 14px;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+
+        @media (max-width: 767px) {
+          .hamburger {
+            display: block;
+          }
+          .main-nav {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            padding: 20px;
+            background-color: #1a1a1a;
+            border-top: 1px solid #333;
+          }
+          .main-nav.show {
+            display: flex;
+          }
+        }
+
+        @media (min-width: 1400px) {
+          .hamburger {
+            display: block;
+          }
+          .main-nav {
+            display: none;
+            position: absolute;
+            right: 30px;
+            top: 70px;
+            flex-direction: column;
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+          }
+          .main-nav.show {
+            display: flex;
+          }
+        }
+
+        @media (min-width: 768px) and (max-width: 1399px) {
+          .hamburger {
+            display: none;
+          }
+          .main-nav {
+            display: flex !important;
+            position: static;
+            flex-direction: row;
+            background-color: transparent;
+            padding: 0;
+          }
+        }
+      `}</style>
+    </>
   );
 };
 

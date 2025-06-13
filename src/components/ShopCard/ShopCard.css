@@ -9,24 +9,24 @@
 }
 
 .salon-title {
-  border-color: #ff69b4; /* Hot pink border for the salon title */
+  border-color: #4e454a; /* Hot pink border for the salon title */
 }
 
 .bg-hotpink {
-  background-color: #ff69b4; /* Hot pink background */
+  background-color: #4e454a; /* Hot pink background */
 }
 
 .shop-card {
   background-color: #ffffff; /* White card background */
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #ff69b4;
+  border: 1px solid #4e454a;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .shop-card:hover {
   transform: scale(1.05);
-  box-shadow: 0 6px 12px rgba(255, 105, 180, 0.5);
+  box-shadow: 0 6px 12px rgba(44, 38, 41, 0.5);
 }
 
 .card-info-bg {
@@ -34,7 +34,7 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(to top, rgba(255, 105, 180, 0.8), rgba(255, 105, 180, 0));
+  background: linear-gradient(to top, rgba(54, 48, 51, 0.8), rgba(255, 105, 180, 0));
   color: white;
   padding: 10px;
 }
@@ -50,7 +50,7 @@
 
 .card-info-bg h6 {
   
-  color: #72065b; /* White text for shop names */
+  color: #31162b; /* White text for shop names */
   font-weight: bold;
   font-size: 1rem; /* Adjust font size as needed */
 }
@@ -72,8 +72,8 @@
   background-color: #fff;
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #ff69b4;
-  box-shadow: 0 2px 6px rgba(255, 105, 180, 0.2);
+  border: 1px solid #4e454a;
+  box-shadow: 0 2px 6px rgba(90, 80, 85, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   text-align: center;
@@ -102,7 +102,7 @@
   aspect-ratio: 1 / 1;  /* ensures it stays square */
   object-fit: cover;    /* fills the circle without distortion */
   border-radius: 50%;
-  /* border: 3px solid #ff69b4; */
+  /* border: 3px solid #4e454a; */
 }
 
 
@@ -111,7 +111,7 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(to top, rgba(255, 105, 180, 0.8), transparent);
+  background: linear-gradient(to top, rgba(49, 43, 46, 0.8), transparent);
   color: #fff;
   padding: 10px;
   border-bottom-left-radius: 10px;

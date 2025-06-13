@@ -93,7 +93,7 @@ const ShopCard = () => {
           <h6 className="text-center">
             <span className="border py-2 ps-2 salon-title">
               TOP 10{" "}
-              <span className="py-2 px-2 bg-hotpink text-white">RESTAURENTS</span>
+              <span className="py-2 px-2 bg-black text-white">RESTAURENTS</span>
             </span>
           </h6>
         </div>

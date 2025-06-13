@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-collection,
+  collection,
   addDoc,
   getDocs,
   query,
@@ -11,13 +11,12 @@ collection,
 import { db } from "../../Firebase/firebase";
 import { useNavigate } from "react-router-dom";
 
-
 const AddToCartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const [loyaltyPoints, setLoyaltyPoints] = useState(0);
-const [couponRedeemed, setCouponRedeemed] = useState(false);
+  const [couponRedeemed, setCouponRedeemed] = useState(false);
 
   const [deliveryDetails, setDeliveryDetails] = useState({
     name: "",
@@ -30,29 +29,27 @@ const [couponRedeemed, setCouponRedeemed] = useState(false);
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(storedCart);
   }, []);
-  
+
   useEffect(() => {
-  const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-  setCartItems(storedCart);
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCartItems(storedCart);
 
-  const userEmail = localStorage.getItem("email");
-  if (userEmail) {
-    const fetchLoyaltyPoints = async () => {
-      const usersRef = collection(db, "userLogin");
-      const q = query(usersRef, where("email", "==", userEmail));
-      const snapshot = await getDocs(q);
-      if (!snapshot.empty) {
-        const userDoc = snapshot.docs[0];
-        const points = userDoc.data().loyaltyPoints || 0;
-        setLoyaltyPoints(points);
-      }
-    };
+    const userEmail = localStorage.getItem("email");
+    if (userEmail) {
+      const fetchLoyaltyPoints = async () => {
+        const usersRef = collection(db, "userLogin");
+        const q = query(usersRef, where("email", "==", userEmail));
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          const userDoc = snapshot.docs[0];
+          const points = userDoc.data().loyaltyPoints || 0;
+          setLoyaltyPoints(points);
+        }
+      };
 
-    fetchLoyaltyPoints();
-  }
-}, []);
-
-
+      fetchLoyaltyPoints();
+    }
+  }, []);
 
   const updateCart = (updatedItems) => {
     setCartItems(updatedItems);
@@ -81,134 +78,128 @@ const [couponRedeemed, setCouponRedeemed] = useState(false);
     updateCart(updated);
   };
 
-const subtotal = cartItems.reduce(
-  (acc, item) => acc + item.quantity * Number(item.Price),
-  0
-);
+  const subtotal = cartItems.reduce(
+    (acc, item) => acc + item.quantity * Number(item.Price),
+    0
+  );
 
-const discount = couponRedeemed && subtotal > 300 ? 300 : 0;
-const totalPrice = subtotal - discount;
+  const discount = couponRedeemed && subtotal > 300 ? 300 : 0;
+  const totalPrice = subtotal - discount;
 
+  const handleCheckoutClick = () => {
+    if (cartItems.length === 0) return alert("Cart is empty!");
 
-const handleCheckoutClick = () => {
-  if (cartItems.length === 0) return alert("Cart is empty!");
+    const userEmail = localStorage.getItem("email");
 
-  const userEmail = localStorage.getItem("email");
+    if (!userEmail) {
+      // Redirect to login if email is not found
+      window.location.href = "/login";
+      return;
+    }
 
-  if (!userEmail) {
-    // Redirect to login if email is not found
-    window.location.href = "/login";
-    return;
-  }
+    setShowModal(true); // Show delivery modal if email exists
+  };
 
-  setShowModal(true); // Show delivery modal if email exists
-};
+  const handleOrderSubmit = async () => {
+    const { name, contact, address, flat, paymentMethod } = deliveryDetails;
+    if (!name || !contact || !address || !flat || !paymentMethod) {
+      return alert(
+        "Please fill all delivery details and select payment method."
+      );
+    }
 
+    const userEmail = localStorage.getItem("email");
+    if (!userEmail) {
+      return alert("User not logged in.");
+    }
 
-const handleOrderSubmit = async () => {
-  const { name, contact, address, flat, paymentMethod } = deliveryDetails;
-  if (!name || !contact || !address || !flat || !paymentMethod) {
-    return alert("Please fill all delivery details and select payment method.");
-  }
+    const groupedByRestaurant = cartItems.reduce((acc, item) => {
+      if (!acc[item.shopName]) acc[item.shopName] = [];
+      acc[item.shopName].push(item);
+      return acc;
+    }, {});
 
-  const userEmail = localStorage.getItem("email");
-  if (!userEmail) {
-    return alert("User not logged in.");
-  }
+    try {
+      for (const [restaurant, items] of Object.entries(groupedByRestaurant)) {
+        await addDoc(collection(db, "orders", restaurant, "items"), {
+          restaurant,
+          items,
+          total: items.reduce(
+            (sum, item) => sum + item.quantity * Number(item.Price),
+            0
+          ),
+          deliveryDetails,
+          UserOrderedFrom: userEmail,
+          status: {
+            active: true,
+            delivered: false,
+          },
+          createdAt: new Date(),
+        });
+      }
 
-  const groupedByRestaurant = cartItems.reduce((acc, item) => {
-    if (!acc[item.shopName]) acc[item.shopName] = [];
-    acc[item.shopName].push(item);
-    return acc;
-  }, {});
+      // 🟨 LOYALTY POINTS LOGIC START
+      const usersRef = collection(db, "userLogin");
+      const q = query(usersRef, where("email", "==", userEmail));
+      const snapshot = await getDocs(q);
 
-  try {
-    for (const [restaurant, items] of Object.entries(groupedByRestaurant)) {
-      await addDoc(collection(db, "orders", restaurant, "items"), {
-        restaurant,
-        items,
-        total: items.reduce(
-          (sum, item) => sum + item.quantity * Number(item.Price),
-          0
-        ),
-        deliveryDetails,
-        UserOrderedFrom: userEmail,
-        status: {
-          active: true,
-          delivered: false,
+      if (!snapshot.empty) {
+        const userDoc = snapshot.docs[0];
+        const currentPoints = userDoc.data().loyaltyPoints || 0;
+        let newPoints;
+
+        if (couponRedeemed) {
+          newPoints = 20; // Reset to 20 if coupon was used
+        } else {
+          newPoints = currentPoints + 20; // Else, add 20 normally
+        }
+
+        await updateDoc(doc(db, "userLogin", userDoc.id), {
+          loyaltyPoints: newPoints,
+        });
+
+        // Update local state so UI reflects change immediately (optional)
+        setLoyaltyPoints(newPoints);
+      }
+      // 🟨 LOYALTY POINTS LOGIC END
+
+      localStorage.removeItem("cart");
+      setCartItems([]);
+      setShowModal(false);
+      window.dispatchEvent(new Event("cartUpdated"));
+
+      await fetch("https://foodserver-eta.vercel.app/send-order-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        createdAt: new Date(),
+        body: JSON.stringify({
+          to: userEmail,
+          name,
+          cartItems,
+          total: cartItems.reduce(
+            (sum, item) => sum + item.quantity * Number(item.Price),
+            0
+          ),
+          address: `${flat}, ${address}`,
+        }),
       });
+
+      if (paymentMethod === "Card") {
+        window.location.href =
+          "https://buy.stripe.com/test_28EfZgdMfc2o4dQcJf1Nu03";
+      } else {
+        alert("Order placed successfully!");
+      }
+
+      navigate("/order");
+
+      window.location.reload();
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Failed to place order.");
     }
-
-// 🟨 LOYALTY POINTS LOGIC START
-const usersRef = collection(db, "userLogin");
-const q = query(usersRef, where("email", "==", userEmail));
-const snapshot = await getDocs(q);
-
-if (!snapshot.empty) {
-  const userDoc = snapshot.docs[0];
-  const currentPoints = userDoc.data().loyaltyPoints || 0;
-  let newPoints;
-
-  if (couponRedeemed) {
-    newPoints = 20; // Reset to 20 if coupon was used
-  } else {
-    newPoints = currentPoints + 20; // Else, add 20 normally
-  }
-
-  await updateDoc(doc(db, "userLogin", userDoc.id), {
-    loyaltyPoints: newPoints,
-  });
-
-  // Update local state so UI reflects change immediately (optional)
-  setLoyaltyPoints(newPoints);
-}
-// 🟨 LOYALTY POINTS LOGIC END
-
-
-    localStorage.removeItem("cart");
-    setCartItems([]);
-    setShowModal(false);
-    window.dispatchEvent(new Event("cartUpdated"));
-
-    await fetch("https://foodserver-eta.vercel.app/send-order-email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        to: userEmail,
-        name,
-        cartItems,
-        total: cartItems.reduce(
-          (sum, item) => sum + item.quantity * Number(item.Price),
-          0
-        ),
-        address: `${flat}, ${address}`,
-      }),
-    });
-
-    if (paymentMethod === "Card") {
-      window.location.href = "https://buy.stripe.com/test_28EfZgdMfc2o4dQcJf1Nu03";
-    } else {
-      alert("Order placed successfully!");
-    }
-
-    navigate("/order");
-    
-    window.location.reload();
-    
-  } catch (error) {
-    console.error("Error placing order:", error);
-    alert("Failed to place order.");
-  }
-};
-
-
-
-
-
+  };
 
   return (
     <div style={styles.container}>
@@ -217,7 +208,7 @@ if (!snapshot.empty) {
         <p style={styles.emptyCart}>Your cart is empty.</p>
       ) : (
         <>
-             <table style={styles.table}>
+          <table style={styles.table}>
             <thead>
               <tr>
                 <th style={{ ...styles.th, width: "35%" }}>Item</th>
@@ -233,7 +224,9 @@ if (!snapshot.empty) {
               {cartItems.map((item) => (
                 <tr key={item.id}>
                   <td style={styles.td}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 15 }}
+                    >
                       <img
                         src={item.ServiceImage}
                         alt={item.ServiceName}
@@ -288,54 +281,58 @@ if (!snapshot.empty) {
                 <td colSpan="5" style={styles.totalLabel}>
                   Total:
                 </td>
-                <td style={{ textAlign: "center" }}>Rs {totalPrice.toFixed(2)}</td>
+                <td style={{ textAlign: "center" }}>
+                  Rs {totalPrice.toFixed(2)}
+                </td>
                 <td></td>
               </tr>
             </tbody>
           </table>
 
           {loyaltyPoints > 200 && !couponRedeemed && (
-  <button
-    onClick={() => setCouponRedeemed(true)}
-    style={{
-      marginTop: 15,
-      padding: "10px 20px",
-      backgroundColor: "#4CAF50",
-      color: "#fff",
-      border: "none",
-      borderRadius: 6,
-      cursor: "pointer",
-    }}
-  >
-    Redeem Coupon (300 Rs OFF)
-  </button>
-)}
-<br></br>
-{couponRedeemed && (
-  <p style={{ color: "#28a745", marginTop: 10 }}>
-    Coupon Applied: ₹300 Discount
-  </p>
-)}
-
+            <button
+              onClick={() => setCouponRedeemed(true)}
+              style={{
+                marginTop: 15,
+                padding: "10px 20px",
+                backgroundColor: "#4CAF50",
+                color: "#fff",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+            >
+              Redeem Coupon (300 Rs OFF)
+            </button>
+          )}
+          <br></br>
+          {couponRedeemed && (
+            <p style={{ color: "#28a745", marginTop: 10 }}>
+              Coupon Applied: ₹300 Discount
+            </p>
+          )}
 
           <button
             style={{
               marginTop: 30,
               padding: "12px 24px",
-              backgroundColor: "#ff4da6",
-              color: "#fff",
+              backgroundColor: black,
+              color: white,
               fontWeight: "bold",
-              border: "none",
+              border: `2px solid`,
               borderRadius: 8,
               cursor: "pointer",
               fontSize: 16,
+              transition: "all 0.3s ease",
             }}
+            onMouseEnter={(e) => (e.target.style.backgroundColor = black)}
+            onMouseLeave={(e) => (e.target.style.backgroundColor = black)}
             onClick={handleCheckoutClick}
           >
             Checkout
           </button>
 
-        {showModal && (
+         {showModal && (
   <div
     style={{
       position: "fixed",
@@ -343,102 +340,126 @@ if (!snapshot.empty) {
       left: 0,
       width: "100vw",
       height: "100vh",
-      background: "rgba(0, 0, 0, 0.6)",
+      background: "rgba(0, 0, 0, 0.7)",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      zIndex: 1000,
-      fontFamily: "Arial, sans-serif",
+      zIndex: 9999,
+      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
     }}
   >
     <div
       style={{
-        background: "#ffffff",
-        padding: "30px 25px",
-        borderRadius: "12px",
+        backgroundColor: "#fff",
+        padding: "35px 30px",
+        borderRadius: "14px",
         width: "100%",
-        maxWidth: "420px",
-        boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2)",
+        maxWidth: "460px",
+        boxShadow: "0 12px 32px rgba(0, 0, 0, 0.3)",
+        border: "2px solid rgb(58, 50, 54)",
       }}
     >
-      <h2 style={{ marginBottom: 20, textAlign: "center", color: "#333" }}>
+      <h2
+        style={{
+          marginBottom: 24,
+          textAlign: "center",
+          color: "#111",
+          fontWeight: "bold",
+          fontSize: "1.8rem",
+        }}
+      >
         Delivery Information
       </h2>
 
-      <div style={{ marginBottom: 12 }}>
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={deliveryDetails.name}
-          onChange={(e) =>
-            setDeliveryDetails({ ...deliveryDetails, name: e.target.value })
-          }
-          style={inputStyle}
-        />
-      </div>
+      <input
+        type="text"
+        placeholder="Full Name"
+        value={deliveryDetails.name}
+        onChange={(e) =>
+          setDeliveryDetails({ ...deliveryDetails, name: e.target.value })
+        }
+        style={{
+          ...inputStyle,
+          marginBottom: 14,
+        }}
+      />
+      <input
+        type="text"
+        placeholder="Contact Number"
+        value={deliveryDetails.contact}
+        onChange={(e) =>
+          setDeliveryDetails({ ...deliveryDetails, contact: e.target.value })
+        }
+        style={{
+          ...inputStyle,
+          marginBottom: 14,
+        }}
+      />
+      <input
+        type="text"
+        placeholder="Flat / House No."
+        value={deliveryDetails.flat}
+        onChange={(e) =>
+          setDeliveryDetails({ ...deliveryDetails, flat: e.target.value })
+        }
+        style={{
+          ...inputStyle,
+          marginBottom: 14,
+        }}
+      />
+      <textarea
+        placeholder="Full Address"
+        value={deliveryDetails.address}
+        onChange={(e) =>
+          setDeliveryDetails({ ...deliveryDetails, address: e.target.value })
+        }
+        style={{
+          ...inputStyle,
+          height: 80,
+          resize: "none",
+          marginBottom: 16,
+        }}
+      ></textarea>
 
-      <div style={{ marginBottom: 12 }}>
-        <input
-          type="text"
-          placeholder="Contact Number"
-          value={deliveryDetails.contact}
-          onChange={(e) =>
-            setDeliveryDetails({ ...deliveryDetails, contact: e.target.value })
-          }
-          style={inputStyle}
-        />
-      </div>
-
-      <div style={{ marginBottom: 12 }}>
-        <input
-          type="text"
-          placeholder="Flat / House No."
-          value={deliveryDetails.flat}
-          onChange={(e) =>
-            setDeliveryDetails({ ...deliveryDetails, flat: e.target.value })
-          }
-          style={inputStyle}
-        />
-      </div>
-
-      <div style={{ marginBottom: 12 }}>
-        <textarea
-          placeholder="Full Address"
-          value={deliveryDetails.address}
-          onChange={(e) =>
-            setDeliveryDetails({ ...deliveryDetails, address: e.target.value })
-          }
-          style={{ ...inputStyle, height: 80, resize: "none" }}
-        ></textarea>
-      </div>
-
-      {/* Payment Method */}
       <div style={{ marginBottom: 20 }}>
-        <label style={{ fontWeight: "bold", marginBottom: 5, display: "block" }}>
+        <label
+          style={{
+            fontWeight: "bold",
+            marginBottom: 8,
+            display: "block",
+            color: "#333",
+          }}
+        >
           Payment Method:
         </label>
-        <div style={{ display: "flex", gap: 15 }}>
-          <label>
+        <div style={{ display: "flex", gap: 20 }}>
+          <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <input
               type="radio"
               value="Cash"
               checked={deliveryDetails.paymentMethod === "Cash"}
               onChange={(e) =>
-                setDeliveryDetails({ ...deliveryDetails, paymentMethod: e.target.value })
+                setDeliveryDetails({
+                  ...deliveryDetails,
+                  paymentMethod: e.target.value,
+                })
               }
             />
-            <span style={{ marginLeft: 6 }}>Cash</span>
+            Cash
           </label>
-          <label>
+          <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <input
               type="radio"
               value="Card"
               checked={deliveryDetails.paymentMethod === "Card"}
               onChange={(e) =>
-                setDeliveryDetails({ ...deliveryDetails, paymentMethod: e.target.value })
+                setDeliveryDetails({
+                  ...deliveryDetails,
+                  paymentMethod: e.target.value,
+                })
               }
             />
-            <span style={{ marginLeft: 6 }}>Card</span>
+            Card
           </label>
         </div>
       </div>
@@ -446,10 +467,16 @@ if (!snapshot.empty) {
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <button
           style={{
-            ...buttonStyle,
-            backgroundColor: "#28a745",
+            padding: "12px",
+            borderRadius: 8,
+            border: "none",
+            fontWeight: "bold",
+            backgroundColor: "#000",
             color: "#fff",
             width: "48%",
+            fontSize: "15px",
+            cursor: "pointer",
+            transition: "all 0.3s ease",
           }}
           onClick={handleOrderSubmit}
         >
@@ -457,10 +484,16 @@ if (!snapshot.empty) {
         </button>
         <button
           style={{
-            ...buttonStyle,
-            backgroundColor: "#f5f5f5",
+            padding: "12px",
+            borderRadius: 8,
+            border: "1px solid #ccc",
+            backgroundColor: "#fff",
             color: "#333",
             width: "48%",
+            fontSize: "15px",
+            fontWeight: "bold",
+            cursor: "pointer",
+            transition: "all 0.3s ease",
           }}
           onClick={() => setShowModal(false)}
         >
@@ -476,14 +509,19 @@ if (!snapshot.empty) {
     </div>
   );
 };
+const pink = "#000";
+const black = "#000";
+const white = "#fff";
 
 const inputStyle = {
   width: "100%",
   padding: "10px",
   marginBottom: 12,
   borderRadius: 6,
-  border: "1px solid #ccc",
+  border: `1px solid ${pink}`,
   fontSize: 14,
+  outline: "none",
+  transition: "all 0.3s ease",
 };
 
 const buttonStyle = {
@@ -492,25 +530,28 @@ const buttonStyle = {
   border: "none",
   fontWeight: "bold",
   cursor: "pointer",
+  transition: "all 0.3s ease",
+  fontSize: 15,
 };
 
 const styles = {
   container: {
-    maxWidth: 900,
+    maxWidth: 1200,
     margin: "40px auto",
     padding: "30px 20px",
-    backgroundColor: "#fff",
+    backgroundColor: white,
     borderRadius: 12,
     boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    color: "#222",
+    color: black,
   },
   heading: {
     fontSize: "2rem",
     fontWeight: "700",
-    borderBottom: "3px solid #ff4da6",
+    borderBottom: `3px solid ${pink}`,
     paddingBottom: 8,
     marginBottom: 30,
+    color: black,
   },
   table: {
     width: "100%",
@@ -522,15 +563,15 @@ const styles = {
     padding: "12px 15px",
     fontWeight: "600",
     fontSize: 14,
-    color: "#666",
-    borderBottom: "2px solid #ff4da6",
+    color: black,
+    borderBottom: `2px solid ${pink}`,
   },
   td: {
-    backgroundColor: "#fafafa",
+    backgroundColor: "#fefefe",
     padding: "12px 15px",
     verticalAlign: "middle",
     fontSize: 14,
-    color: "#444",
+    color: "#333",
     borderRadius: 8,
   },
   img: {
@@ -558,9 +599,9 @@ const styles = {
     gap: 12,
   },
   quantityButton: {
-    border: "1.5px solid #ff4da6",
-    backgroundColor: "#fff",
-    color: "#ff4da6",
+    border: `1.5px solid ${pink}`,
+    backgroundColor: white,
+    color: pink,
     padding: "6px 14px",
     borderRadius: 6,
     cursor: "pointer",
@@ -570,13 +611,13 @@ const styles = {
     transition: "all 0.3s ease",
   },
   quantityButtonHover: {
-    backgroundColor: "#ff4da6",
-    color: "#fff",
+    backgroundColor: pink,
+    color: white,
   },
   removeButton: {
     background: "transparent",
     border: "none",
-    color: "#ff4da6",
+    color: pink,
     cursor: "pointer",
     fontWeight: "bold",
     fontSize: 22,

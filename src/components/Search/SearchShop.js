@@ -7,7 +7,6 @@ import Loader from "../Loader/loader";
 import { NavLink } from "react-router-dom";
 import Footer from "../Footer/Footer";
 
-// Firebase Configuration
 const config = {
   apiKey: "AIzaSyAd0K-Y8AnNXSJXQRZeQtphPZQPOkSAgmo",
   authDomain: "foodplanet-82388.firebaseapp.com",
@@ -188,108 +187,6 @@ const SearchShop = () => {
         <div className="container pt-3 pb-5">
           <BreadCrumbs text="black" activePage={"Search"} />
 
-          {/* Continuous Infinite Marquee with More Items */}
-<div
-  style={{
-    overflow: "hidden",
-    whiteSpace: "nowrap",
-    borderRadius: "16px",
-    border: "2px solid rgb(1, 5, 12)",
-    padding: "8px 0",
-    marginBottom: "16px",
-    backgroundColor: "#ffffff",
-    boxShadow: "0 2px 8px rgba(13, 110, 253, 0.15)",
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-  }}
->
-  <div
-    style={{
-      display: "inline-flex",
-      animation: "marquee 30s linear infinite",
-    }}
-  >
-    {[ // List of items, repeated twice for seamless scrolling
-      { name: "Pulao", img: "https://cdn-icons-png.flaticon.com/512/1046/1046784.png" },
-      { name: "Biryani", img: "https://cdn-icons-png.flaticon.com/512/590/590685.png" },
-      { name: "Zinger", img: "https://cdn-icons-png.flaticon.com/512/1046/1046787.png" },
-      { name: "Burger", img: "https://cdn-icons-png.flaticon.com/512/1046/1046788.png" },
-      { name: "Pizza", img: "https://cdn-icons-png.flaticon.com/512/1046/1046783.png" },
-      { name: "Fries", img: "https://cdn-icons-png.flaticon.com/512/1046/1046785.png" },
-      { name: "Sandwich", img: "https://cdn-icons-png.flaticon.com/512/1046/1046790.png" },
-      { name: "Taco", img: "https://cdn-icons-png.flaticon.com/512/1046/1046791.png" },
-      { name: "Sushi", img: "https://cdn-icons-png.flaticon.com/512/1046/1046789.png" },
-      { name: "Doughnut", img: "https://cdn-icons-png.flaticon.com/512/1046/1046792.png" },
-    ].concat([ // repeat same items to create seamless loop
-      { name: "Pulao", img: "https://cdn-icons-png.flaticon.com/512/1046/1046784.png" },
-      { name: "Biryani", img: "https://cdn-icons-png.flaticon.com/512/590/590685.png" },
-      { name: "Zinger", img: "https://cdn-icons-png.flaticon.com/512/1046/1046787.png" },
-      { name: "Burger", img: "https://cdn-icons-png.flaticon.com/512/1046/1046788.png" },
-      { name: "Pizza", img: "https://cdn-icons-png.flaticon.com/512/1046/1046783.png" },
-      { name: "Fries", img: "https://cdn-icons-png.flaticon.com/512/1046/1046785.png" },
-      { name: "Sandwich", img: "https://cdn-icons-png.flaticon.com/512/1046/1046790.png" },
-      { name: "Taco", img: "https://cdn-icons-png.flaticon.com/512/1046/1046791.png" },
-      { name: "Sushi", img: "https://cdn-icons-png.flaticon.com/512/1046/1046789.png" },
-      { name: "Doughnut", img: "https://cdn-icons-png.flaticon.com/512/1046/1046792.png" },
-    ]).map((item, index) => (
-      <div
-        key={index}
-        style={{
-          display: "inline-flex",
-          flexDirection: "column",
-          alignItems: "center",
-          marginRight: "28px",
-          cursor: "pointer",
-          transition: "transform 0.3s ease",
-          minWidth: "90px",
-        }}
-        title={item.name}
-        onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.15)")}
-        onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
-      >
-        <img
-          src={item.img}
-          alt={item.name}
-          style={{
-            width: "56px",
-            height: "56px",
-            borderRadius: "50%",
-            border: "2px solid rgb(5, 13, 26)",
-            objectFit: "cover",
-            marginBottom: "6px",
-            boxShadow: "0 3px 6px rgba(5, 0, 0, 0.1)",
-            backgroundColor: "#fff",
-          }}
-        />
-        <span
-          style={{
-            fontWeight: "600",
-            color: "#0d6efd",
-            fontSize: "13px",
-            letterSpacing: "0.5px",
-            userSelect: "none",
-          }}
-        >
-          {item.name}
-        </span>
-      </div>
-    ))}
-  </div>
-
-  <style>
-    {`
-      @keyframes marquee {
-        0% {
-          transform: translateX(0);
-        }
-        100% {
-          transform: translateX(-50%);
-        }
-      }
-    `}
-  </style>
-</div>
-
-
           {/* Search Bar */}
           <div className="d-flex justify-content-center align-items-center pt-3">
             <input
@@ -369,19 +266,21 @@ const SearchShop = () => {
                   onChange={(e) => setServiceFilter(e.target.value)}
                 >
                   <option value="">Select Food Category</option>
-              <option value="Fast Food">Fast Food</option>
-              <option value="Bakery & Desserts">Bakery</option>
-              <option value="Beverages">Beverages</option>
-              <option value="Seafood">Seafood</option>
-              <option value="Vegetarian">Vegetarian</option>
-              <option value="BBQ & Grills">BBQ & Grills</option>
-              <option value="Traditional Cuisine">Traditional Cuisine</option>
-              <option value="Healthy & Organic">Healthy & Organic</option>
-              <option value="Pakistani">Pakistani</option>
-              <option value="Chinese">Chinese</option>
-              <option value="Desserts">Desserts</option>
-              <option value="Frozen Item">Frozen Item</option>
-              <option value="Salads">Salads</option>
+                  <option value="Fast Food">Fast Food</option>
+                  <option value="Bakery & Desserts">Bakery</option>
+                  <option value="Beverages">Beverages</option>
+                  <option value="Seafood">Seafood</option>
+                  <option value="Vegetarian">Vegetarian</option>
+                  <option value="BBQ & Grills">BBQ & Grills</option>
+                  <option value="Traditional Cuisine">
+                    Traditional Cuisine
+                  </option>
+                  <option value="Healthy & Organic">Healthy & Organic</option>
+                  <option value="Pakistani">Pakistani</option>
+                  <option value="Chinese">Chinese</option>
+                  <option value="Desserts">Desserts</option>
+                  <option value="Frozen Item">Frozen Item</option>
+                  <option value="Salads">Salads</option>
                 </select>
               </div>
             </div>
@@ -417,22 +316,6 @@ const SearchShop = () => {
                   </NavLink>
                 ) : (
                   <div
-                    style={
-                      {
-                        // display: "block",
-                        // width: "100%",
-                        // textDecoration: "none",
-                        // borderRadius: "10px",
-                        // background: "#f4f4f4",
-                        // padding: "20px",
-                        // boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                        // textAlign: "center",
-                        // color: "#777",
-                        // fontSize: "18px",
-                        // fontWeight: "600",
-                        // transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                      }
-                    }
                   >
                     {/* <h4>{res.shopName} - Currently Unavailable</h4>
                     <p>Sorry, the salon is not accepting bookings at this time.</p> */}
