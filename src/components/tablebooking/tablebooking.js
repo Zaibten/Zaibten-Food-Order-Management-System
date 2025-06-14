@@ -260,7 +260,7 @@ export default function TableBooking() {
               />
             </div>
 
-            <button
+<button
   type="submit"
   style={{
     ...styles.button,
@@ -271,6 +271,8 @@ export default function TableBooking() {
 >
   Book Table
 </button>
+
+
 
           </form>
 
@@ -419,25 +421,26 @@ const styles = {
     transition: "border-color 0.3s ease",
     boxSizing: "border-box",
   },
-button: {
-  padding: "12px 0",
-  background: "linear-gradient(135deg, #000000, #434343)", // black gradient
-  border: "none",
-  borderRadius: 10,
-  color: "#ffffff",
-  fontWeight: "700",
-  fontSize: 18,
-  cursor: "pointer",
-  transition: "all 0.3s ease",
-  marginTop: 10,
-  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
-},
-
-// Add hover state with inline event
-buttonHover: {
-  background: "linear-gradient(135deg, #333333, #000000)",
-  transform: "scale(1.02)",
-},
+  button: {
+    background: "linear-gradient(135deg, #ff7e00, #ff4b2b)", // orange to reddish-orange gradient
+    color: "#fff",
+    padding: "12px 24px",
+    border: "none",
+    borderRadius: "8px",
+    fontSize: "16px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    boxShadow: "0 4px 12px rgba(255, 107, 0, 0.3)",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    backgroundSize: "200% 200%",
+    backgroundPosition: "0% 50%",
+  },
+  buttonHover: {
+    backgroundPosition: "100% 50%", // animate gradient shift
+    transform: "scale(1.03)",
+    boxShadow: "0 6px 16px rgba(255, 75, 43, 0.4)",
+  },
 
   loading: {
     fontSize: 20,

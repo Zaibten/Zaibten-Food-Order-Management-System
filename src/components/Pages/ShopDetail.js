@@ -412,14 +412,14 @@ const addToCart = (service) => {
                                 {service.Description}
                               </p>
                               <p
-                                style={{ color: "#ff6b6b", fontWeight: "700" }}
+                                style={{ color: "#e29521", fontWeight: "700" }}
                               >
                                 Price: Rs {service.Price}
                               </p>
                               <button
                                 onClick={() => addToCart(service)}
                                 style={{
-                                  backgroundColor: "#ff6b6b",
+                                  backgroundColor: "#e29521",
                                   color: "white",
                                   border: "none",
                                   padding: "8px 12px",

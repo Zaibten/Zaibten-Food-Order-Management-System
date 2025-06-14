@@ -13,14 +13,14 @@
 }
 
 .bg-hotpink {
-  background-color: #4e454a; /* Hot pink background */
+  background-color: #e29521; /* Hot pink background */
 }
 
 .shop-card {
   background-color: #ffffff; /* White card background */
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #4e454a;
+  border: 1px solid #4e4c45;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -50,7 +50,7 @@
 
 .card-info-bg h6 {
   
-  color: #31162b; /* White text for shop names */
+  color: #855917; /* White text for shop names */
   font-weight: bold;
   font-size: 1rem; /* Adjust font size as needed */
 }
@@ -72,7 +72,7 @@
   background-color: #fff;
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #4e454a;
+  border: none;
   box-shadow: 0 2px 6px rgba(90, 80, 85, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
@@ -111,7 +111,7 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(to top, rgba(49, 43, 46, 0.8), transparent);
+  background: linear-gradient(to top, rgba(219, 118, 3, 0.8), transparent);
   color: #fff;
   padding: 10px;
   border-bottom-left-radius: 10px;

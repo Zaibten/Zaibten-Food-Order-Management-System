@@ -179,7 +179,6 @@ const Profile = () => {
     </>
   );
 };
-
 const styles = {
   container: {
     backgroundColor: "#f4f7fc",
@@ -214,7 +213,7 @@ const styles = {
     marginBottom: "25px",
     textAlign: "center",
     color: "#333",
-    fontWeight:"bold",
+    fontWeight: "bold",
   },
   field: {
     display: "flex",
@@ -250,30 +249,35 @@ const styles = {
     marginTop: "30px",
     display: "flex",
     justifyContent: "center",
+    gap: "20px",
   },
-editButton: {
-  padding: "12px 24px",
-  background: "linear-gradient(135deg, #000000, #434343)",
-  color: "#fff",
-  border: "none",
-  borderRadius: "8px",
-  cursor: "pointer",
-  fontSize: "1rem",
-  fontWeight: "bold",
-  transition: "all 0.3s ease-in-out",
-},
-saveButton: {
-  padding: "12px 24px",
-  background: "linear-gradient(135deg, #000000, #434343)",
-  color: "#fff",
-  border: "none",
-  borderRadius: "8px",
-  cursor: "pointer",
-  fontSize: "1rem",
-  fontWeight: "bold",
-  transition: "all 0.3s ease-in-out",
-},
 
+  // 🔶 ORANGE THEME BUTTONS
+  editButton: {
+    padding: "12px 24px",
+    background: "linear-gradient(135deg, #ff7e00, #ff4b2b)", // Orange Gradient
+    color: "#fff",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontSize: "1rem",
+    fontWeight: "bold",
+    transition: "all 0.3s ease-in-out",
+    boxShadow: "0 4px 12px rgba(255, 107, 0, 0.3)",
+  },
+  saveButton: {
+    padding: "12px 24px",
+    background: "linear-gradient(135deg, #ff7e00, #ff4b2b)", // Orange Gradient
+    color: "#fff",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontSize: "1rem",
+    fontWeight: "bold",
+    transition: "all 0.3s ease-in-out",
+    boxShadow: "0 4px 12px rgba(255, 107, 0, 0.3)",
+  },
 };
+
 
 export default Profile;

@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../Firebase/firebase";
 import { useNavigate } from "react-router-dom";
+import Footer from "../Footer/Footer";
 
 const AddToCartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -17,6 +18,7 @@ const AddToCartPage = () => {
   const navigate = useNavigate();
   const [loyaltyPoints, setLoyaltyPoints] = useState(0);
   const [couponRedeemed, setCouponRedeemed] = useState(false);
+
 
   const [deliveryDetails, setDeliveryDetails] = useState({
     name: "",
@@ -202,12 +204,35 @@ const AddToCartPage = () => {
   };
 
   return (
+    <div>
     <div style={styles.container}>
-      <h2 style={styles.heading}>Your Cart</h2>
+      <h2
+  style={{
+    fontSize: "2rem",
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: "20px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "#333",
+    letterSpacing: "0.5px",
+    gap: "10px",
+    animation: "fadeSlideDown 0.6s ease",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+  }}
+>
+  <span role="img" aria-label="cart" style={{ fontSize: "1.8rem" }}>
+    🛒
+  </span>
+  Your Cart
+</h2>
+
       {cartItems.length === 0 ? (
         <p style={styles.emptyCart}>Your cart is empty.</p>
       ) : (
         <>
+        <div style={{ overflowX: "auto" }}>
           <table style={styles.table}>
             <thead>
               <tr>
@@ -288,7 +313,7 @@ const AddToCartPage = () => {
               </tr>
             </tbody>
           </table>
-
+          </div>
           {loyaltyPoints > 200 && !couponRedeemed && (
             <button
               onClick={() => setCouponRedeemed(true)}
@@ -311,28 +336,37 @@ const AddToCartPage = () => {
               Coupon Applied: ₹300 Discount
             </p>
           )}
+<button
+  style={{
+    marginTop: 30,
+    padding: "12px 24px",
+    backgroundColor: "#ff6b00", // orange
+    color: "#fff",
+    fontWeight: "bold",
+    border: `2px solid #ff6b00`, // orange border
+    borderRadius: 8,
+    cursor: "pointer",
+    fontSize: 16,
+    transition: "all 0.3s ease",
+  }}
+  onMouseEnter={(e) => (e.target.style.backgroundColor = "#e65c00")} // darker orange on hover
+  onMouseLeave={(e) => (e.target.style.backgroundColor = "#ff6b00")}
+  onClick={handleCheckoutClick}
+>
+  Checkout
+</button>
 
-          <button
-            style={{
-              marginTop: 30,
-              padding: "12px 24px",
-              backgroundColor: black,
-              color: white,
-              fontWeight: "bold",
-              border: `2px solid`,
-              borderRadius: 8,
-              cursor: "pointer",
-              fontSize: 16,
-              transition: "all 0.3s ease",
-            }}
-            onMouseEnter={(e) => (e.target.style.backgroundColor = black)}
-            onMouseLeave={(e) => (e.target.style.backgroundColor = black)}
-            onClick={handleCheckoutClick}
-          >
-            Checkout
-          </button>
+<style>
+{`
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+`}
+</style>
 
-         {showModal && (
+
+    {showModal && (
   <div
     style={{
       position: "fixed",
@@ -340,23 +374,27 @@ const AddToCartPage = () => {
       left: 0,
       width: "100vw",
       height: "100vh",
-      background: "rgba(0, 0, 0, 0.7)",
+      background: "rgba(0, 0, 0, 0.6)",
+      backdropFilter: "blur(4px)",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
       zIndex: 9999,
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      animation: "fadeIn 0.3s ease-in-out",
     }}
   >
     <div
       style={{
         backgroundColor: "#fff",
-        padding: "35px 30px",
-        borderRadius: "14px",
-        width: "100%",
+        padding: "40px 30px",
+        borderRadius: "16px",
+        width: "95%",
         maxWidth: "460px",
-        boxShadow: "0 12px 32px rgba(0, 0, 0, 0.3)",
-        border: "2px solid rgb(58, 50, 54)",
+        boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)",
+        border: "1px solid #eaeaea",
+        transform: "translateY(0)",
+        transition: "transform 0.3s ease",
       }}
     >
       <h2
@@ -365,102 +403,101 @@ const AddToCartPage = () => {
           textAlign: "center",
           color: "#111",
           fontWeight: "bold",
-          fontSize: "1.8rem",
+          fontSize: "1.9rem",
         }}
       >
-        Delivery Information
+        🛒 Delivery Information
       </h2>
 
-      <input
-        type="text"
-        placeholder="Full Name"
-        value={deliveryDetails.name}
-        onChange={(e) =>
-          setDeliveryDetails({ ...deliveryDetails, name: e.target.value })
-        }
-        style={{
-          ...inputStyle,
-          marginBottom: 14,
-        }}
-      />
-      <input
-        type="text"
-        placeholder="Contact Number"
-        value={deliveryDetails.contact}
-        onChange={(e) =>
-          setDeliveryDetails({ ...deliveryDetails, contact: e.target.value })
-        }
-        style={{
-          ...inputStyle,
-          marginBottom: 14,
-        }}
-      />
-      <input
-        type="text"
-        placeholder="Flat / House No."
-        value={deliveryDetails.flat}
-        onChange={(e) =>
-          setDeliveryDetails({ ...deliveryDetails, flat: e.target.value })
-        }
-        style={{
-          ...inputStyle,
-          marginBottom: 14,
-        }}
-      />
+      {[
+        { placeholder: "Full Name", field: "name" },
+        { placeholder: "Contact Number", field: "contact" },
+        { placeholder: "Flat / House No.", field: "flat" },
+      ].map((input, i) => (
+        <input
+          key={i}
+          type="text"
+          placeholder={input.placeholder}
+          value={deliveryDetails[input.field]}
+          onChange={(e) =>
+            setDeliveryDetails({
+              ...deliveryDetails,
+              [input.field]: e.target.value,
+            })
+          }
+          style={{
+            width: "100%",
+            padding: "12px 14px",
+            marginBottom: 14,
+            borderRadius: 10,
+            border: "1px solid #ccc",
+            fontSize: 15,
+            outline: "none",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+          }}
+        />
+      ))}
+
       <textarea
         placeholder="Full Address"
         value={deliveryDetails.address}
         onChange={(e) =>
-          setDeliveryDetails({ ...deliveryDetails, address: e.target.value })
+          setDeliveryDetails({
+            ...deliveryDetails,
+            address: e.target.value,
+          })
         }
         style={{
-          ...inputStyle,
+          width: "100%",
+          padding: "12px 14px",
           height: 80,
           resize: "none",
+          borderRadius: 10,
+          border: "1px solid #ccc",
+          fontSize: 15,
           marginBottom: 16,
+          outline: "none",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
         }}
       ></textarea>
 
-      <div style={{ marginBottom: 20 }}>
+      <div style={{ marginBottom: 22 }}>
         <label
           style={{
             fontWeight: "bold",
-            marginBottom: 8,
+            marginBottom: 10,
             display: "block",
-            color: "#333",
+            color: "#444",
+            fontSize: 15,
           }}
         >
           Payment Method:
         </label>
         <div style={{ display: "flex", gap: 20 }}>
-          <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <input
-              type="radio"
-              value="Cash"
-              checked={deliveryDetails.paymentMethod === "Cash"}
-              onChange={(e) =>
-                setDeliveryDetails({
-                  ...deliveryDetails,
-                  paymentMethod: e.target.value,
-                })
-              }
-            />
-            Cash
-          </label>
-          <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <input
-              type="radio"
-              value="Card"
-              checked={deliveryDetails.paymentMethod === "Card"}
-              onChange={(e) =>
-                setDeliveryDetails({
-                  ...deliveryDetails,
-                  paymentMethod: e.target.value,
-                })
-              }
-            />
-            Card
-          </label>
+          {["Cash", "Card"].map((method) => (
+            <label
+              key={method}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                fontSize: 15,
+              }}
+            >
+              <input
+                type="radio"
+                value={method}
+                checked={deliveryDetails.paymentMethod === method}
+                onChange={(e) =>
+                  setDeliveryDetails({
+                    ...deliveryDetails,
+                    paymentMethod: e.target.value,
+                  })
+                }
+              />
+              {method}
+            </label>
+          ))}
         </div>
       </div>
 
@@ -471,17 +508,24 @@ const AddToCartPage = () => {
             borderRadius: 8,
             border: "none",
             fontWeight: "bold",
-            backgroundColor: "#000",
+            backgroundColor: "#ff6b00",
             color: "#fff",
             width: "48%",
             fontSize: "15px",
             cursor: "pointer",
             transition: "all 0.3s ease",
           }}
+          onMouseEnter={(e) =>
+            (e.target.style.backgroundColor = "#e65c00")
+          }
+          onMouseLeave={(e) =>
+            (e.target.style.backgroundColor = "#ff6b00")
+          }
           onClick={handleOrderSubmit}
         >
           Submit
         </button>
+
         <button
           style={{
             padding: "12px",
@@ -507,112 +551,114 @@ const AddToCartPage = () => {
         </>
       )}
     </div>
+     <br></br>
+            <Footer />
+    </div>
   );
 };
+
+
+const isMobile = window.innerWidth < 768;
 const pink = "#000";
 const black = "#000";
 const white = "#fff";
 
+
+
 const inputStyle = {
   width: "100%",
-  padding: "10px",
-  marginBottom: 12,
+  padding: isMobile ? "8px" : "10px",
   borderRadius: 6,
   border: `1px solid ${pink}`,
-  fontSize: 14,
+  fontSize: isMobile ? 13 : 14,
   outline: "none",
   transition: "all 0.3s ease",
 };
 
-const buttonStyle = {
-  padding: "10px 16px",
-  borderRadius: 6,
-  border: "none",
-  fontWeight: "bold",
-  cursor: "pointer",
-  transition: "all 0.3s ease",
-  fontSize: 15,
-};
-
 const styles = {
   container: {
-    maxWidth: 1200,
-    margin: "40px auto",
-    padding: "30px 20px",
+    maxWidth: "100%",
+    margin: "20px auto",
+    padding: isMobile ? "20px 12px" : "30px 24px",
     backgroundColor: white,
-    borderRadius: 12,
-    boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+    borderRadius: 16,
+    boxShadow: "0 8px 28px rgba(0,0,0,0.08)",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
     color: black,
+    overflowX: "auto",
   },
   heading: {
-    fontSize: "2rem",
+    fontSize: isMobile ? "1.5rem" : "2rem",
     fontWeight: "700",
     borderBottom: `3px solid ${pink}`,
     paddingBottom: 8,
-    marginBottom: 30,
+    marginBottom: 20,
     color: black,
+    textAlign: isMobile ? "center" : "left",
   },
-  table: {
-    width: "100%",
-    borderCollapse: "separate",
-    borderSpacing: "0 12px",
-  },
+table: {
+  width: "100%",
+  borderCollapse: "collapse",
+  minWidth: "1000px", // Force horizontal scroll when space is tight
+},
   th: {
     textAlign: "left",
-    padding: "12px 15px",
+    padding: isMobile ? "10px" : "12px 15px",
     fontWeight: "600",
     fontSize: 14,
     color: black,
     borderBottom: `2px solid ${pink}`,
   },
   td: {
-    backgroundColor: "#fefefe",
-    padding: "12px 15px",
+    backgroundColor: "#fff",
+    padding: isMobile ? "10px" : "12px 15px",
     verticalAlign: "middle",
     fontSize: 14,
     color: "#333",
     borderRadius: 8,
   },
   img: {
-    width: 70,
-    height: 70,
+    width: isMobile ? 60 : 70,
+    height: isMobile ? 60 : 70,
     objectFit: "cover",
-    borderRadius: 8,
+    borderRadius: 10,
     boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
   },
-  itemInfo: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 6,
-  },
-  description: {
-    margin: 0,
-    fontSize: 12,
-    color: "#777",
-    fontStyle: "italic",
-  },
+ itemInfo: {
+  display: "flex",
+  flexDirection: "column",
+  gap: 6,
+  minWidth: 250,
+  maxWidth: 350,
+  wordBreak: "break-word",
+},
+
+description: {
+  margin: 0,
+  fontSize: 12,
+  color: "#777",
+  fontStyle: "italic",
+  overflowWrap: "break-word",
+  wordBreak: "break-word",
+},
+
   quantityControls: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: 12,
+    gap: 10,
   },
   quantityButton: {
     border: `1.5px solid ${pink}`,
     backgroundColor: white,
     color: pink,
-    padding: "6px 14px",
+    padding: "4px 12px",
     borderRadius: 6,
     cursor: "pointer",
     fontWeight: "600",
-    fontSize: 18,
+    fontSize: 16,
     userSelect: "none",
     transition: "all 0.3s ease",
-  },
-  quantityButtonHover: {
-    backgroundColor: pink,
-    color: white,
   },
   removeButton: {
     background: "transparent",
@@ -622,9 +668,6 @@ const styles = {
     fontWeight: "bold",
     fontSize: 22,
     transition: "color 0.3s ease",
-  },
-  removeButtonHover: {
-    color: "#e60073",
   },
   totalRow: {
     fontWeight: "700",
@@ -642,6 +685,7 @@ const styles = {
     textAlign: "center",
     marginTop: 40,
   },
+
 };
 
 export default AddToCartPage;

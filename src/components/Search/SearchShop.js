@@ -287,9 +287,14 @@ const SearchShop = () => {
 
             {/* Clear Filters Button */}
             <div className="mt-3 text-end">
-              <button className="btn btn-danger" onClick={clearFilters}>
-                Clear Filters
-              </button>
+              <button
+  className="btn"
+  style={{ backgroundColor: "#e29521", color: "#fff" }}
+  onClick={clearFilters}
+>
+  Clear Filters
+</button>
+
             </div>
           </div>
         </div>

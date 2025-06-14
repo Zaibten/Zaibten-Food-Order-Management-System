@@ -55,7 +55,7 @@ const Header = () => {
   const navStyle = (active) => ({
     padding: "10px 18px",
     color: active ? "#fff" : "#ccc",
-    backgroundColor: active ? "#ff2d75" : "transparent",
+    backgroundColor: active ? "#ff6600" : "transparent",
     borderRadius: "8px",
     textDecoration: "none",
     fontWeight: active ? "bold" : "500",
@@ -79,7 +79,7 @@ const Header = () => {
         {/* Top Bar */}
         <div
           style={{
-            backgroundColor: "#ff2d75",
+            backgroundColor: "#ff6600",
             textAlign: "center",
             padding: "6px",
             fontSize: "13px",
@@ -111,7 +111,7 @@ const Header = () => {
               textDecoration: "none",
             }}
           >
-            <span style={{ color: "#ff2d75" }}>🍽️ FoodPlanet</span>
+            <span style={{ color: "#ff6600" }}>🍽️ FoodPlanet</span>
           </Link>
 
           {/* Hamburger Icon */}
@@ -134,7 +134,7 @@ const Header = () => {
               backgroundColor: "#1e1e1e",
               padding: "8px 14px",
               borderRadius: "8px",
-              color: "#ff2d75",
+              color: "#ff6600",
               fontWeight: "bold",
               fontSize: "14px",
               minWidth: "120px",
@@ -152,7 +152,7 @@ const Header = () => {
                 <button
                   onClick={handleLogout}
                   style={{
-                    backgroundColor: "#ff2d75",
+                    backgroundColor: "#ff6600",
                     color: "#fff",
                     border: "none",
                     padding: "8px 16px",
@@ -171,7 +171,7 @@ const Header = () => {
               <Link
                 to="/login"
                 style={{
-                  backgroundColor: "#ff2d75",
+                  backgroundColor: "#ff6600",
                   color: "#fff",
                   padding: "8px 16px",
                   borderRadius: "8px",
