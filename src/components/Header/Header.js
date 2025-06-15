@@ -14,6 +14,13 @@ const Header = () => {
   const path = location.pathname;
   const displayName = email ? email.split("@")[0].replace(/[0-9]/g, "") : "";
 
+   useEffect(() => {
+      const script = document.createElement("script");
+      script.src = "//code.tidio.co/prhna9cfxdbxlsuioyzyzbyq4exusfkt.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }, []);
+
   useEffect(() => {
     const updateCartCount = () => {
       const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
