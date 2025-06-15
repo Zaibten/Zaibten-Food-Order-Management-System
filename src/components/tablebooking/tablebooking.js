@@ -13,6 +13,8 @@ export default function TableBooking() {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const today = new Date().toISOString().split("T")[0];
   const [formData, setFormData] = useState({
     userName: "",
@@ -25,7 +27,6 @@ export default function TableBooking() {
   const [showModal, setShowModal] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
-
   useEffect(() => {
     async function fetchRestaurants() {
       setLoading(true);
@@ -36,11 +37,16 @@ export default function TableBooking() {
           ...doc.data(),
         }));
         setRestaurants(data);
+
+        if (data.length === 0) {
+          alert("No restaurants are available at the moment.");
+        }
       } catch (error) {
         console.error("Error fetching restaurants:", error);
       }
       setLoading(false);
     }
+
     fetchRestaurants();
   }, []);
 
@@ -112,8 +118,8 @@ export default function TableBooking() {
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || "Email sending failed");
         console.log("Booking email sent successfully.");
-        window.location.href = "https://buy.stripe.com/test_aFa4gy5fJ7M85hUfVr1Nu04";
-
+        window.location.href =
+          "https://buy.stripe.com/test_aFa4gy5fJ7M85hUfVr1Nu04";
       } catch (emailError) {
         console.error("Failed to send booking email:", emailError);
         setMessage("Booking saved but failed to send email notification.");
@@ -150,29 +156,65 @@ export default function TableBooking() {
 
   const isTodaySelected = formData.bookingDate === today;
   const minTime = isTodaySelected ? formattedCurrentTime : "00:00";
+  const filteredRestaurants = restaurants.filter((r) =>
+    r.shopName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div>
       <div style={styles.pageContainer}>
         <div style={styles.card}>
           <h2 style={styles.heading}>Book a Table</h2>
+<style>
+  {`
+    input:hover {
+      border-color: #3b82f6 !important;
+      cursor: pointer;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    input:focus {
+      border-color: #2563eb !important;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+  `}
+</style>
 
-          <label htmlFor="restaurant" style={styles.label}>
-            Select Restaurant
-          </label>
-          <select
-            id="restaurant"
-            value={selectedRestaurant?.id || ""}
-            onChange={(e) => handleSelectRestaurant(e.target.value)}
-            style={styles.select}
-          >
-            <option value="">-- Select --</option>
-            {restaurants.map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.shopName} — {r.shopAddress}
-              </option>
-            ))}
-          </select>
+          <input
+            type="text"
+            id="search"
+            placeholder="Type restaurant name..."
+            style={styles.input}
+            value={searchTerm}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSearchTerm(value);
+
+              const filtered = restaurants.filter((r) =>
+                r.shopName.toLowerCase().includes(value.toLowerCase())
+              );
+
+              if (value && filtered.length === 0) {
+                alert("No matching restaurant found.");
+              }
+            }}
+          />
+
+          {searchTerm && filteredRestaurants.length > 0 && (
+            <ul style={styles.dropdown}>
+              {filteredRestaurants.map((r) => (
+                <li
+                  key={r.id}
+                  style={styles.dropdownItem}
+                  onClick={() => {
+                    handleSelectRestaurant(r.id);
+                    setSearchTerm(""); // optional: reset input after selection
+                  }}
+                >
+                  {r.shopName} — {r.shopAddress}
+                </li>
+              ))}
+            </ul>
+          )}
 
           {selectedRestaurant && (
             <div style={styles.restaurantCard}>
@@ -260,20 +302,17 @@ export default function TableBooking() {
               />
             </div>
 
-<button
-  type="submit"
-  style={{
-    ...styles.button,
-    ...(isHovering ? styles.buttonHover : {}),
-  }}
-  onMouseEnter={() => setIsHovering(true)}
-  onMouseLeave={() => setIsHovering(false)}
->
-  Book Table
-</button>
-
-
-
+            <button
+              type="submit"
+              style={{
+                ...styles.button,
+                ...(isHovering ? styles.buttonHover : {}),
+              }}
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
+            >
+              Book Table
+            </button>
           </form>
 
           {message && (
@@ -451,4 +490,3 @@ const styles = {
     marginTop: 50,
   },
 };
-
