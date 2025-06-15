@@ -51,7 +51,7 @@ const AIRecommendation = () => {
 <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100vh", background: "#ffe6f2", fontFamily: "Poppins, sans-serif", transition: "all 0.3s ease" }}>
   {/* Heading */}
   <h1 style={{marginTop:-150, color: "#ff1493", fontSize: "28px", fontWeight: "bold", marginBottom: "20px", animation: "fadeIn 1s ease-in-out" }}>
-    Food Planet Recommendations
+    Meals On Wheels Recommendations
   </h1>
 
   {!showRecommendation && !showModal ? (

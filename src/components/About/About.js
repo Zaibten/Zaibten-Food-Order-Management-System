@@ -136,7 +136,7 @@ const styles = {
     fontFamily: "'Segoe UI', sans-serif"
   }}
 >
-  ABOUT FOOD PLANET
+  ABOUT Meals On Wheels
 </h1>
 
         <p style={styles.subHeader}>
@@ -148,7 +148,7 @@ const styles = {
         <div style={styles.row}>
           <div style={styles.columnText}>
             <p>
-              <strong>Food Planet</strong> is the easiest way to discover and
+              <strong>Meals On Wheels</strong> is the easiest way to discover and
               enjoy food around you. Whether you're looking for quick delivery,
               gourmet meals, or your favorite local joints — we’re here to help
               you eat better every day.
@@ -199,7 +199,7 @@ const styles = {
           <div style={styles.testimonialCard}>
             <p style={styles.testimonialText}>
               "Fast delivery, beautiful app, and super friendly support. I order
-              every week from Food Planet!"
+              every week from Meals On Wheels!"
             </p>
             <div style={styles.testimonialAuthor}>– Sarah J.</div>
           </div>
@@ -208,7 +208,7 @@ const styles = {
 
           <div style={styles.testimonialCard}>
             <p style={styles.testimonialText}>
-              "Food Planet completely changed how I eat. It’s so easy and smooth,
+              "Meals On Wheels completely changed how I eat. It’s so easy and smooth,
               and the meals are always hot!"
             </p>
             <div style={styles.testimonialAuthor}>– Mike T.</div>

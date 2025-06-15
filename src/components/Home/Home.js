@@ -48,6 +48,9 @@ const Home = () => {
       <Carousel />
       <br></br>
       <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
       <ShopCard data={getShops} />
       <SearchHome />
       <About />

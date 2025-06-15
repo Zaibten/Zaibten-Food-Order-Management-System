@@ -111,7 +111,7 @@ const Header = () => {
               textDecoration: "none",
             }}
           >
-            <span style={{ color: "#ff6600" }}>🍽️ FoodPlanet</span>
+            <span style={{ color: "#ff6600" }}>🍽️ Meals On Wheels</span>
           </Link>
 
           {/* Hamburger Icon */}

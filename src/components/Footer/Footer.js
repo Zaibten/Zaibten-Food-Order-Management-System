@@ -15,10 +15,10 @@ const Footer = () => {
       <div className="footer-content">
         <div className="footer-logo-section">
           <div className="footer-logo">
-            <img src={logo} alt="Food Planet Logo" />
+            <img src={logo} alt="Meals On Wheels Logo" />
           </div>
           <p>
-  <strong>Food Planet</strong> is a premium food delivery platform that redefines convenience by bringing your favorite meals from top restaurants right to your doorstep. Experience variety, speed, and satisfaction with every order.
+  <strong>Meals On Wheels</strong> is a premium food delivery platform that redefines convenience by bringing your favorite meals from top restaurants right to your doorstep. Experience variety, speed, and satisfaction with every order.
 </p>
 
         </div>
@@ -57,14 +57,14 @@ const Footer = () => {
     <a href="https://youtube.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-youtube"></i></a>
   </div>
   <div className="footer-community">
-    <p><strong>Trending Hashtags:</strong> #FoodPlanet #FreshToFork #FlavorOnTheGo #FoodieFavorites</p>
+    <p><strong>Trending Hashtags:</strong> #Meals On Wheels #FreshToFork #FlavorOnTheGo #FoodieFavorites</p>
     <p>Subscribe to our newsletter for exclusive updates and offers!</p>
   </div>
 </div>
 
       </div>
       <div className="footer-bottom">
-<p>© 2025 Food Planet. All rights reserved. Designed with ❤️ for food lovers everywhere.</p>
+<p>© 2025 Meals On Wheels. All rights reserved. Designed with ❤️ for food lovers everywhere.</p>
       </div>
     </footer>
   );

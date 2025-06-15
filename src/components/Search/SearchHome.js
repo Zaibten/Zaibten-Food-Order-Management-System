@@ -13,12 +13,21 @@ const SearchHome = () => {
   return (
     <div className="search-home-container mt-5 mb-5">
       <div>
-        <h4 className="text-center">
-          <span className="search-title py-2 ps-2 text-white border">
-           RESTAURANT{" "}
-            <span className="py-2 px-2 bg-hotpink text-white">ON DEMAND</span>
-          </span>
-        </h4>
+        <h6 className="text-center">
+  <span
+    className="border py-2 ps-2 salon-title"
+    style={{ borderColor: "black", color: "white", borderWidth: "2px", borderStyle: "solid" }}
+  >
+    SEARCH{" "}
+    <span
+      className="py-2 px-2 text-white"
+      style={{ backgroundColor: "#e29521" }}
+    >
+      RESTAURENTS
+    </span>
+  </span>
+</h6>
+
       </div>
       <div className="d-flex justify-content-center mt-5">
         <div className="search-box border responsiveSearchHome">
