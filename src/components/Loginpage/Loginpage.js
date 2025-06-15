@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import "./Loginpage.css";
 import logo from "../../assets/logo2.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faLock, faEnvelope, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { faGoogle, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { UserSignIn, UserSignUp } from "../../Auth/UserAuth";
 import { message } from "antd";
 import { useSelector } from "react-redux";
+import { Link } from 'react-router-dom';
 
 function LoginPage({ name }) {
   const [isSignUpMode, setIsSignUpMode] = useState(false);
@@ -147,7 +148,7 @@ const handleSignUp = async (e) => {
       email,
     }));
 
-    localStorage.setItem('email', email); // Store the email in localStorage
+    // localStorage.setItem('email', email); // Store the email in localStorage
   };
 
   return (
@@ -190,6 +191,25 @@ const handleSignUp = async (e) => {
             </button>
 
             <p className="social-text loginp"> or Sign in with </p>
+
+             <Link
+      to="/"
+      style={{
+        display: "inline-block",
+        padding: "8px 8px",
+        backgroundColor: "#f57c00",
+        color: "#fff",
+        fontSize: "16px",
+        fontWeight: "500",
+        textDecoration: "none",
+        borderRadius: "6px",
+        lineHeight: "1", // ensures vertical centering
+        cursor: "pointer",
+      }}
+    >
+      Proceed to home
+    </Link>
+    <br></br>
 
             <div className="social-media">
               <a href="#!" className="social-icon">
@@ -234,7 +254,7 @@ const handleSignUp = async (e) => {
               />
             </div>
             <div className="input-field">
-              <FontAwesomeIcon icon={faEnvelope} className="my-auto mx-auto" />
+              <FontAwesomeIcon icon={faPhone} className="my-auto mx-auto" />
               <input
                 className="LoginInput"
                 type="phone"
@@ -261,6 +281,24 @@ const handleSignUp = async (e) => {
               Sign Up
             </button>
             <p className="social-text loginp">Or Sign up with</p>
+             <Link
+      to="/"
+      style={{
+        display: "inline-block",
+        padding: "8px 8px",
+        backgroundColor: "#f57c00",
+        color: "#fff",
+        fontSize: "16px",
+        fontWeight: "500",
+        textDecoration: "none",
+        borderRadius: "6px",
+        lineHeight: "1", // ensures vertical centering
+        cursor: "pointer",
+      }}
+    >
+      Proceed to home
+    </Link>
+    <br></br>
             <div className="social-media">
               <a href="#!" className="social-icon">
                 <FontAwesomeIcon icon={faGoogle} className="my-auto mx-auto" />

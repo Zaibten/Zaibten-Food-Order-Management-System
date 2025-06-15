@@ -15,6 +15,9 @@ export default function TableBooking() {
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [hoveredId, setHoveredId] = useState(null); // ✅ Add here safely
+  const [noMatch, setNoMatch] = useState(false);
+
   const today = new Date().toISOString().split("T")[0];
   const [formData, setFormData] = useState({
     userName: "",
@@ -165,8 +168,8 @@ export default function TableBooking() {
       <div style={styles.pageContainer}>
         <div style={styles.card}>
           <h2 style={styles.heading}>Book a Table</h2>
-<style>
-  {`
+          <style>
+            {`
     input:hover {
       border-color: #3b82f6 !important;
       cursor: pointer;
@@ -176,45 +179,100 @@ export default function TableBooking() {
       border-color: #2563eb !important;
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
     }
+    ul li:hover {
+      background-color: #3b82f6 !important;
+      color: white !important;
+    }
   `}
-</style>
+          </style>
 
-          <input
-            type="text"
-            id="search"
-            placeholder="Type restaurant name..."
-            style={styles.input}
-            value={searchTerm}
-            onChange={(e) => {
-              const value = e.target.value;
-              setSearchTerm(value);
+          <div style={{ position: "relative", width: "100%" }}>
+            <input
+              type="text"
+              id="search"
+              placeholder="Type restaurant name..."
+              style={{
+                width: "100%",
+                padding: "10px",
+                fontWeight: "bold",
+                backgroundColor: searchTerm ? "#007bff" : "#fff",
+                color: searchTerm ? "#fff" : "#000",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+              }}
+              value={searchTerm}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSearchTerm(value);
 
-              const filtered = restaurants.filter((r) =>
-                r.shopName.toLowerCase().includes(value.toLowerCase())
-              );
+                const filtered = restaurants.filter((r) =>
+                  r.shopName.toLowerCase().includes(value.toLowerCase())
+                );
 
-              if (value && filtered.length === 0) {
-                alert("No matching restaurant found.");
-              }
-            }}
-          />
+                if (value && filtered.length === 0) {
+                  alert("No matching restaurant found.");
+                }
+              }}
+            />
+            {searchTerm && (
+              <div
+                style={{
+                  marginTop: "5px",
+                  backgroundColor: "#007bff",
+                  color: "#fff",
+                  fontWeight: "bold",
+                  padding: "8px",
+                  borderRadius: "4px",
+                }}
+              >
+                {filteredRestaurants.length > 0
+                  ? "Matching restaurants found!"
+                  : "No match found."}
+              </div>
+            )}
 
-          {searchTerm && filteredRestaurants.length > 0 && (
-            <ul style={styles.dropdown}>
-              {filteredRestaurants.map((r) => (
-                <li
-                  key={r.id}
-                  style={styles.dropdownItem}
-                  onClick={() => {
-                    handleSelectRestaurant(r.id);
-                    setSearchTerm(""); // optional: reset input after selection
-                  }}
-                >
-                  {r.shopName} — {r.shopAddress}
-                </li>
-              ))}
-            </ul>
-          )}
+            {searchTerm && filteredRestaurants.length > 0 && (
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: 0,
+                  margin: "8px 0 0",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "8px",
+                  backgroundColor: "#fff",
+                  boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+                  maxHeight: "200px",
+                  overflowY: "auto",
+                  position: "absolute",
+                  width: "100%",
+                  zIndex: 10,
+                }}
+              >
+                {filteredRestaurants.map((r) => (
+                  <li
+                    key={r.id}
+                    onClick={() => {
+                      handleSelectRestaurant(r.id);
+                      setSearchTerm("");
+                    }}
+                    onMouseEnter={() => setHoveredId(r.id)}
+                    onMouseLeave={() => setHoveredId(null)}
+                    style={{
+                      padding: "12px 16px",
+                      cursor: "pointer",
+                      fontWeight: hoveredId === r.id ? "bold" : "normal",
+                      backgroundColor: hoveredId === r.id ? "#3b82f6" : "#fff",
+                      color: hoveredId === r.id ? "#fff" : "#1f2937",
+                      transition: "background-color 0.2s ease",
+                      borderBottom: "1px solid #eee",
+                    }}
+                  >
+                    {r.shopName} — {r.shopAddress}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
           {selectedRestaurant && (
             <div style={styles.restaurantCard}>
@@ -304,9 +362,13 @@ export default function TableBooking() {
 
             <button
               type="submit"
+              disabled={!selectedRestaurant || noMatch}
               style={{
                 ...styles.button,
                 ...(isHovering ? styles.buttonHover : {}),
+                ...(noMatch || !selectedRestaurant
+                  ? { opacity: 0.5, cursor: "not-allowed" }
+                  : {}),
               }}
               onMouseEnter={() => setIsHovering(true)}
               onMouseLeave={() => setIsHovering(false)}
@@ -374,6 +436,30 @@ const styles = {
     textAlign: "center",
     fontFamily: "'Poppins', sans-serif",
   },
+  dropdown: {
+    marginTop: 5,
+    border: "1px solid #ccc",
+    borderRadius: 8,
+    maxHeight: 200,
+    overflowY: "auto",
+    backgroundColor: "#fff",
+    listStyle: "none",
+    padding: 0,
+    boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
+    zIndex: 10,
+    position: "absolute",
+    width: "100%",
+  },
+
+  dropdownItem: {
+    padding: "12px 16px",
+    cursor: "pointer",
+    fontWeight: 600,
+    fontSize: 15,
+    color: "#1f2937",
+    transition: "background-color 0.2s ease",
+  },
+
   modalButton: {
     backgroundColor: "#1d4ed8",
     color: "#fff",
