@@ -221,25 +221,20 @@ const Header = () => {
           }
         }
 
-        @media (min-width: 1400px) {
-          .hamburger {
-            display: block;
-          }
-          .main-nav {
-            display: none;
-            position: absolute;
-            right: 30px;
-            top: 70px;
-            flex-direction: column;
-            background-color: #1a1a1a;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-          }
-          .main-nav.show {
-            display: flex;
-          }
-        }
+       @media (min-width: 1400px) {
+  .hamburger {
+    display: none !important;
+  }
+  .main-nav {
+    display: flex !important;
+    flex-direction: row;
+    position: static;
+    background-color: transparent;
+    padding: 0;
+    box-shadow: none;
+  }
+}
+
 
         @media (min-width: 768px) and (max-width: 1399px) {
           .hamburger {

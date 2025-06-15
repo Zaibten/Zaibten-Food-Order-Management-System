@@ -153,10 +153,11 @@ const addToCart = (service) => {
   return (
     <div className="w-100">
       <div className="container">
-        <Breadcrumb path="Shop Details" activePage={"Salon"} text="white" />
+        <Breadcrumb path="Shop Details" activePage={"Restaurent"} text="white" />
         <h3 className="text-white text-center">
           <span className="border py-2 ps-4">
-            RESTAURENT{" "}
+            RESTAURENT {" "}
+             <span className="bg-white text-black py-2 pe-1"></span>
             <span className="bg-white text-black py-2 pe-4"> DETAIL</span>
           </span>
         </h3>
@@ -231,8 +232,8 @@ const addToCart = (service) => {
             {/* 🔹 Services Section */}
             <div className="mt-5">
               <h3 className="text-white mb-3">
-                SERVICES BY{" "}
-                <span className="text-decoration-underline">CATEGORY</span>
+                FILTER BY{" "}
+                <span className="">CATEGORY</span>
               </h3>
 
               <div className="row">
@@ -375,68 +376,78 @@ const addToCart = (service) => {
                     return acc;
                   }, {});
 
-                  return Object.entries(grouped).map(
-                    ([category, servicesInCategory]) => (
-                      <div key={category} className="mb-5">
-                        <h4 className="text-white mb-3">{category}</h4>
-                        <div className="row g-3">
-                          {servicesInCategory.map((service) => (
-                            <div
-                              key={service.id}
-                              className="col-12 col-sm-6 col-md-4 col-lg-3"
-                              style={{
-                                padding: "15px",
-                                borderRadius: "10px",
-                                boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
-                              }}
-                            >
-                              <img
-                                src={service.ServiceImage}
-                                alt={service.ServiceName}
-                                style={{
-                                  width: "100%",
-                                  borderRadius: "8px",
-                                  marginBottom: "10px",
-                                }}
-                              />
-                              <h5 style={{ color: "#fff", fontWeight: "600" }}>
-                                {service.ServiceName}
-                              </h5>
-                              <p
-                                style={{
-                                  color: "#ddd",
-                                  fontSize: "14px",
-                                  minHeight: "60px",
-                                }}
-                              >
-                                {service.Description}
-                              </p>
-                              <p
-                                style={{ color: "#e29521", fontWeight: "700" }}
-                              >
-                                Price: Rs {service.Price}
-                              </p>
-                              <button
-                                onClick={() => addToCart(service)}
-                                style={{
-                                  backgroundColor: "#e29521",
-                                  color: "white",
-                                  border: "none",
-                                  padding: "8px 12px",
-                                  borderRadius: "6px",
-                                  cursor: "pointer",
-                                  fontWeight: "600",
-                                  marginTop: "8px",
-                                }}
-                              >
-                                Add to Cart
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )
-                  );
+                  return Object.entries(grouped).map(([category, servicesInCategory]) => (
+  <div key={category} className="mb-5">
+    <h4 className="text-white mb-3">{category}</h4>
+    <div className="row g-3">
+      {servicesInCategory.map((service) => (
+        <div
+          key={service.id}
+          className="col-12 col-sm-6 col-md-4 col-lg-3"
+        >
+          <div
+            style={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              padding: "15px",
+              borderRadius: "10px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+              backgroundColor: "#1c1c1c", // optional: dark background for contrast
+            }}
+          >
+            <img
+              src={service.ServiceImage}
+              alt={service.ServiceName}
+              style={{
+                width: "100%",
+                borderRadius: "8px",
+                marginBottom: "10px",
+                height: "160px",
+                objectFit: "cover",
+              }}
+            />
+            <h5 style={{ color: "#fff", fontWeight: "600", marginBottom: "6px" }}>
+              {service.ServiceName}
+            </h5>
+            <p
+              style={{
+                color: "#ddd",
+                fontSize: "14px",
+                minHeight: "60px",
+                marginBottom: "10px",
+              }}
+            >
+              {service.Description}
+            </p>
+            <div style={{ marginTop: "auto" }}>
+              <p style={{ color: "#e29521", fontWeight: "700", marginBottom: "8px" }}>
+                Price: Rs {service.Price}
+              </p>
+              <button
+                onClick={() => addToCart(service)}
+                style={{
+                  width: "100%",
+                  backgroundColor: "#e29521",
+                  color: "white",
+                  border: "none",
+                  padding: "10px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontWeight: "600",
+                }}
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+));
+
                 })()}
               </div>
             </div>

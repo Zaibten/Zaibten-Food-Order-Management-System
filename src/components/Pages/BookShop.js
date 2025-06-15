@@ -227,7 +227,7 @@ const BookShop = () => {
     <div className="">
       <div className="container">
         <BreadCrumb //BreadCrumbs component
-          prevPage={"Salon"}
+          prevPage={"Restaurent"}
           link={`/shop/${parent}`}
           activePage={"Booking"}
           text="white"
